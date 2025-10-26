@@ -1,0 +1,1531 @@
+## 📝 Aplicativo BuildPicker - Configurador de Corrimãos (Código Completo)
+
+Aqui está o arquivo HTML completo, com todas as características solicitadas, incluindo o painel de administração básico e a persistência de pedidos via LocalStorage. Ele está pronto para ser colocado no Netlify.
+
+---
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildPicker - Configure seu Corrimão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis de Cores e Tipografia */
+        :root {
+            --red-tijolo: #dc2626;
+            --laranja-acao: #f59e0b;
+            --cinza-carvao: #475569;
+            --bg-escuro: #0f172a; /* Body background */
+            --bg-card: #1e293b;   /* Card background */
+            --text-light: #f8fafc; /* Lighter text for dark backgrounds */
+            --text-dark: #cbd5e1;  /* Darker text for details */
+            --border-color: #334155; /* Border for cards */
+            --success-color: #22c55e; /* Green for success */
+            --error-color: var(--red-tijolo); /* Red for errors */
+            --warning-color: var(--laranja-acao); /* Orange for warnings */
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-escuro);
+            color: var(--text-light);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--bg-card);
+            padding: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--laranja-acao);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--bg-escuro);
+            font-size: 20px;
+        }
+
+        .phase-indicator {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .phase-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .phase-badge.active {
+            background: var(--red-tijolo);
+            color: var(--text-light);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex-grow: 1; /* Allow content to grow */
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 40px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--red-tijolo), var(--laranja-acao));
+            transition: width 0.3s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--cinza-carvao);
+        }
+
+        .step.active {
+            color: var(--laranja-acao);
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text-dark);
+        }
+
+        .step.active .step-number {
+            background: var(--laranja-acao);
+            color: var(--bg-escuro);
+        }
+
+        .step.completed .step-number {
+            background: var(--success-color);
+            color: var(--text-light);
+        }
+
+        /* Phases */
+        .phase {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .phase.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .phase-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--red-tijolo);
+            margin-bottom: 10px;
+        }
+
+        .phase-description {
+            color: var(--cinza-carvao);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .product-card:hover {
+            border-color: var(--laranja-acao);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .product-card.selected {
+            border-color: var(--red-tijolo);
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(245, 158, 11, 0.1));
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            background: var(--bg-escuro);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 40px;
+            color: var(--cinza-carvao);
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .product-description {
+            font-size: 12px;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--laranja-acao);
+        }
+
+        .product-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background: var(--success-color);
+            color: var(--text-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: var(--bg-escuro);
+            color: var(--text-light);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--cinza-carvao);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--red-tijolo);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+        }
+
+        /* Summary */
+        .summary-container {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--red-tijolo);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item-label {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .summary-item-value {
+            color: var(--laranja-acao);
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-top: 2px solid var(--red-tijolo);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--red-tijolo);
+            margin-top: 20px;
+        }
+
+        .summary-total-value {
+            color: var(--laranja-acao);
+            font-size: 24px;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: var(--red-tijolo);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-light);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--laranja-acao);
+            color: var(--laranja-acao);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: var(--text-light);
+        }
+
+        .btn-success:hover {
+            background: #1c9e4a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-admin {
+            background: var(--cinza-carvao);
+            color: var(--text-light);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: auto;
+            min-width: unset;
+            padding: 10px 20px;
+            z-index: 101;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .btn-admin:hover {
+            background: #334155;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--success-color);
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--red-tijolo);
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .modal-order-id {
+            background: var(--bg-escuro);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-family: 'Inter', monospace;
+            font-weight: 600;
+            color: var(--laranja-acao);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .phase-title {
+                font-size: 22px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                min-width: 100%;
+            }
+
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .progress-steps {
+                font-size: 11px;
+            }
+
+            .step-number {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
+            
+            .btn-admin {
+                width: calc(100% - 40px);
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: 600;
+            border-left: 5px solid;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .alert.active {
+            display: block;
+        }
+
+        .alert-error {
+            background: rgba(var(--red-tijolo-rgb), 0.1); /* Using rgba for transparency */
+            color: var(--error-color);
+            border-color: var(--error-color);
+        }
+        .alert-success {
+            background: rgba(var(--success-color-rgb), 0.1);
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        /* Define RGBA values for use in alert backgrounds */
+        :root {
+            --red-tijolo-rgb: 220, 38, 38;
+            --success-color-rgb: 34, 197, 94;
+        }
+
+
+        /* 2D Preview */
+        .preview-container {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .preview-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .preview-box {
+            width: 100%;
+            min-height: 200px;
+            background: var(--bg-escuro);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--cinza-carvao);
+            margin-bottom: 15px;
+            padding: 20px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .preview-details {
+            text-align: left;
+            font-size: 13px;
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        .preview-details strong {
+            color: var(--laranja-acao);
+        }
+
+        /* Admin Panel Styles */
+        #adminPanel.modal-content {
+            max-width: 700px;
+            text-align: left;
+            padding: 30px;
+        }
+
+        #adminPanel h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #adminPanel input[type="password"] {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        #adminPanel #adminLoginSection {
+            text-align: center;
+        }
+
+        #adminPanel #adminOrdersSection {
+            display: none;
+        }
+
+        #adminPanel #adminOrdersSection.active {
+            display: block;
+        }
+
+        #adminPanel .order-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        #adminPanel .order-item {
+            background: var(--bg-escuro);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        #adminPanel .order-item strong {
+            color: var(--laranja-acao);
+        }
+
+        #adminPanel .order-item p {
+            margin: 5px 0;
+        }
+
+        #adminPanel .order-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        #adminPanel .order-actions .btn-primary,
+        #adminPanel .order-actions .btn-secondary {
+            flex: unset;
+            min-width: unset;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">BP</div>
+                <span>BuildPicker</span>
+            </div>
+            <div class="phase-indicator">
+                <span class="phase-badge active" id="phaseBadge">Fase 1 de 7</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <div class="container">
+        <!-- PROGRESS BAR -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <span>Design</span>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <span>Poste</span>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <span>Corrimão</span>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <span>Madeira</span>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-number">5</div>
+                    <span>Spindle</span>
+                </div>
+                <div class="step" data-step="6">
+                    <div class="step-number">6</div>
+                    <span>Dados</span>
+                </div>
+                <div class="step" data-step="7">
+                    <div class="step-number">7</div>
+                    <span>Revisão</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTA -->
+        <div class="alert alert-error" id="alertError"></div>
+        <div class="alert alert-success" id="alertSuccess"></div>
+
+        <!-- FASE 1: DESIGN -->
+        <div class="phase active" data-phase="1">
+            <h2 class="phase-title">🎨 Escolha o Estilo de Design</h2>
+            <p class="phase-description">Selecione o estilo que melhor se adequa ao seu projeto</p>
+            <div class="products-grid" id="designsGrid"></div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase1">Próximo</button>
+            </div>
+        </div>
+
+        <!-- FASE 2: POSTE -->
+        <div class="phase" data-phase="2">
+            <h2 class="phase-title">🏗️ Escolha o Poste</h2>
+            <p class="phase-description">Selecione o poste compatível com seu design</p>
+            <div class="products-grid" id="postsGrid"></div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
+                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase2">Próximo</button>
+            </div>
+        </div>
+
+        <!-- FASE 3: CORRIMÃO -->
+        <div class="phase" data-phase="3">
+            <h2 class="phase-title">🛤️ Escolha o Corrimão</h2>
+            <p class="phase-description">Selecione o corrimão que combina com seu projeto</p>
+            <div class="products-grid" id="railingsGrid"></div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
+                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase3">Próximo</button>
+            </div>
+        </div>
+
+        <!-- FASE 4: MADEIRA -->
+        <div class="phase" data-phase="4">
+            <h2 class="phase-title">🌳 Escolha o Tipo de Madeira</h2>
+            <p class="phase-description">Selecione o tipo de madeira para seu corrimão</p>
+            <div class="products-grid" id="woodsGrid"></div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
+                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase4">Próximo</button>
+            </div>
+        </div>
+
+        <!-- FASE 5: SPINDLE -->
+        <div class="phase" data-phase="5">
+            <h2 class="phase-title">✨ Escolha o Spindle</h2>
+            <p class="phase-description">Selecione o tipo de spindle para complementar seu projeto</p>
+            <div class="products-grid" id="spindlesGrid"></div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
+                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase5">Próximo</button>
+            </div>
+        </div>
+
+        <!-- FASE 6: DADOS DO CLIENTE -->
+        <div class="phase" data-phase="6">
+            <h2 class="phase-title">📋 Seus Dados</h2>
+            <p class="phase-description">Preencha suas informações para finalizarmos seu pedido</p>
+            <div class="form-group">
+                <label for="clientName">Nome Completo *</label>
+                <input type="text" id="clientName" placeholder="Digite seu nome completo" required>
+            </div>
+            <div class="form-group">
+                <label for="clientPhone">Telefone *</label>
+                <input type="tel" id="clientPhone" placeholder="(XX) XXXXX-XXXX" required>
+            </div>
+            <div class="form-group">
+                <label for="clientLocation">Localização / Endereço *</label>
+                <input type="text" id="clientLocation" placeholder="Cidade, Estado ou Endereço completo" required>
+            </div>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
+                <button class="btn-primary" onclick="nextPhase()" id="btnPhase6">Próximo</button>
+            </div>
+        </div>
+
+        <!-- FASE 7: REVISÃO -->
+        <div class="phase" data-phase="7">
+            <h2 class="phase-title">✅ Revisão do Pedido</h2>
+            <p class="phase-description">Verifique todas as suas escolhas antes de enviar</p>
+
+            <!-- PREVIEW -->
+            <div class="preview-container">
+                <div class="preview-title">Visualização do Seu Projeto (2D)</div>
+                <div class="preview-box">
+                    <div id="previewContent">Seu projeto aparecerá aqui!</div>
+                </div>
+                <div class="preview-details" id="previewDetails"></div>
+            </div>
+
+            <!-- RESUMO -->
+            <div class="summary-container">
+                <div class="summary-title">Resumo da Configuração</div>
+                <div class="summary-item">
+                    <span class="summary-item-label">Design:</span>
+                    <span class="summary-item-value" id="summaryDesign">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-item-label">Poste:</span>
+                    <span class="summary-item-value" id="summaryPost">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-item-label">Corrimão:</span>
+                    <span class="summary-item-value" id="summaryRailing">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-item-label">Madeira:</span>
+                    <span class="summary-item-value" id="summaryWood">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-item-label">Spindle:</span>
+                    <span class="summary-item-value" id="summarySpindle">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-item-label">Cliente:</span>
+                    <span class="summary-item-value" id="summaryClient">-</span>
+                </div>
+                <div class="summary-total">
+                    <span>Valor Total Estimado:</span>
+                    <span class="summary-total-value" id="summaryTotal">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
+                <button class="btn-success" onclick="submitOrder()">✓ Enviar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE SUCESSO -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <div class="modal-title">Pedido Enviado com Sucesso!</div>
+            <div class="modal-text">
+                Seu pedido foi recebido com sucesso. Nossa equipe entrará em contato em breve para confirmar os detalhes.
+            </div>
+            <div class="modal-order-id">
+                ID do Pedido: <span id="modalOrderId">-</span>
+            </div>
+            <button class="btn-primary" onclick="resetForm()">Fazer Novo Pedido</button>
+        </div>
+    </div>
+
+    <!-- BOTÃO ADMIN -->
+    <button class="btn-admin" onclick="showAdminPanel()">Painel Admin</button>
+
+    <!-- MODAL PAINEL ADMIN -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content" id="adminPanel">
+            <h2 class="modal-title">Painel de Administração</h2>
+
+            <div id="adminLoginSection">
+                <p class="modal-text">Digite a senha para acessar os pedidos.</p>
+                <div class="form-group">
+                    <label for="adminPassword">Senha:</label>
+                    <input type="password" id="adminPassword" placeholder="********">
+                </div>
+                <button class="btn-primary" onclick="loginAdmin()">Entrar</button>
+                <button class="btn-secondary" onclick="closeAdminPanel()">Fechar</button>
+            </div>
+
+            <div id="adminOrdersSection">
+                <p class="modal-text">Pedidos Recebidos:</p>
+                <ul class="order-list" id="orderList">
+                    <!-- Pedidos serão renderizados aqui -->
+                    <p class="modal-text">Nenhum pedido ainda.</p>
+                </ul>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="logoutAdmin()">Sair</button>
+                    <button class="btn-primary" onclick="clearAllOrders()">Limpar Todos os Pedidos</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // DADOS DO APLICATIVO
+        // ============================================
+        const ADMIN_PASSWORD = "admin"; // Senha para o painel de administração
+
+        const appData = {
+            designs: [
+                {
+                    id: 'design-1',
+                    name: 'Moderno',
+                    value: 'moderno',
+                    description: 'Linhas limpas, minimalismo e funcionalidade',
+                    price: 0,
+                    emoji: '🏢'
+                },
+                {
+                    id: 'design-2',
+                    name: 'Contemporâneo',
+                    value: 'contemporaneo',
+                    description: 'Tendências atuais, mistura de materiais',
+                    price: 0,
+                    emoji: '🎨'
+                },
+                {
+                    id: 'design-3',
+                    name: 'Farmhouse',
+                    value: 'farmhouse',
+                    description: 'Charme rústico e acolhedor',
+                    price: 0,
+                    emoji: '🏡'
+                },
+                {
+                    id: 'design-4',
+                    name: 'Clássico',
+                    value: 'classico',
+                    description: 'Elegância atemporal e detalhes ornamentados',
+                    price: 0,
+                    emoji: '👑'
+                }
+            ],
+            posts: [
+                {
+                    id: 'post-1',
+                    name: 'Poste Slim',
+                    value: 'poste-slim',
+                    description: 'Design minimalista',
+                    price: 75,
+                    compatibleStyles: ['moderno', 'contemporaneo'],
+                    emoji: '📏'
+                },
+                {
+                    id: 'post-2',
+                    name: 'Poste Ornamentado',
+                    value: 'poste-ornamentado',
+                    description: 'Detalhes clássicos e esculpidos',
+                    price: 120,
+                    compatibleStyles: ['farmhouse', 'classico'],
+                    emoji: '🎭'
+                },
+                {
+                    id: 'post-3',
+                    name: 'Poste Quadrado',
+                    value: 'poste-quadrado',
+                    description: 'Formato robusto e versátil',
+                    price: 90,
+                    compatibleStyles: ['moderno', 'contemporaneo', 'farmhouse', 'classico'],
+                    emoji: '📦'
+                }
+            ],
+            railings: [
+                {
+                    id: 'railing-1',
+                    name: 'Corrimão Reto',
+                    value: 'corrimao-reto',
+                    description: 'Design simples e funcional',
+                    price: 50,
+                    compatibleStyles: ['moderno', 'contemporaneo'],
+                    emoji: '➖'
+                },
+                {
+                    id: 'railing-2',
+                    name: 'Corrimão Arredondado',
+                    value: 'corrimao-arredondado',
+                    description: 'Perfil suave e confortável',
+                    price: 65,
+                    compatibleStyles: ['moderno', 'contemporaneo', 'farmhouse'],
+                    emoji: '⭕'
+                },
+                {
+                    id: 'railing-3',
+                    name: 'Corrimão Esculpido',
+                    value: 'corrimao-esculpido',
+                    description: 'Detalhes decorativos elegantes',
+                    price: 80,
+                    compatibleStyles: ['farmhouse', 'classico'],
+                    emoji: '🎪'
+                }
+            ],
+            woods: [
+                {
+                    id: 'wood-1',
+                    name: 'Red Oak',
+                    value: 'redOak',
+                    description: 'Madeira clara com tons avermelhados',
+                    price: 150,
+                    emoji: '🟫'
+                },
+                {
+                    id: 'wood-2',
+                    name: 'White Oak',
+                    value: 'whiteOak',
+                    description: 'Madeira clara com tons acinzentados',
+                    price: 200,
+                    emoji: '⬜'
+                }
+            ],
+            spindles: [
+                {
+                    id: 'spindle-1',
+                    name: 'Spindle Metálico',
+                    value: 'spindle-metalico',
+                    description: 'Moderno e durável em metal',
+                    price: 30,
+                    compatibleStyles: ['moderno', 'contemporaneo'],
+                    emoji: '⚙️'
+                },
+                {
+                    id: 'spindle-2',
+                    name: 'Spindle Madeira Reto',
+                    value: 'spindle-madeira-reto',
+                    description: 'Clássico e elegante em madeira',
+                    price: 25,
+                    compatibleStyles: ['farmhouse', 'classico'],
+                    emoji: '📍'
+                },
+                {
+                    id: 'spindle-3',
+                    name: 'Spindle Madeira Torneado',
+                    value: 'spindle-madeira-torneado',
+                    description: 'Com detalhes torneados artesanais',
+                    price: 40,
+                    compatibleStyles: ['classico'],
+                    emoji: '🎯'
+                }
+            ]
+        };
+
+        // ============================================
+        // ESTADO DA APLICAÇÃO
+        // ============================================
+
+        let currentPhase = 1;
+        const maxPhases = 7;
+
+        const state = {
+            design: null,
+            post: null,
+            railing: null,
+            wood: null,
+            spindle: null,
+            clientName: '',
+            clientPhone: '',
+            clientLocation: ''
+        };
+
+        let orders = JSON.parse(localStorage.getItem('buildPickerOrders')) || [];
+
+        // ============================================
+        // FUNÇÕES DE UTILIDADE
+        // ============================================
+
+        function showElement(id) { document.getElementById(id).style.display = 'block'; }
+        function hideElement(id) { document.getElementById(id).style.display = 'none'; }
+        function addClass(id, className) { document.getElementById(id).classList.add(className); }
+        function removeClass(id, className) { document.getElementById(id).classList.remove(className); }
+
+        function showError(message) {
+            const alert = document.getElementById('alertError');
+            alert.textContent = message;
+            alert.classList.add('active');
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.classList.remove('active');
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const alert = document.getElementById('alertSuccess');
+            alert.textContent = message;
+            alert.classList.add('active');
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.classList.remove('active');
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function generateOrderId() {
+            return `BP-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+        }
+
+        // ============================================
+        // FUNÇÕES DE RENDERIZAÇÃO
+        // ============================================
+
+        function createProductCard(product, type) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+
+            if (state[type] && state[type].id === product.id) {
+                card.classList.add('selected');
+            }
+
+            card.innerHTML = `
+                <div class="product-image">${product.emoji}</div>
+                <div class="product-name">${product.name}</div>
+                <div class="product-description">${product.description}</div>
+                <div class="product-price">R$ ${product.price.toFixed(2).replace('.', ',')}</div>
+            `;
+
+            card.addEventListener('click', () => selectProduct(product, type, card));
+
+            return card;
+        }
+
+        function renderProducts(gridId, productType, filterByStyle = false) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = '';
+            
+            let productsToRender = appData[productType];
+
+            if (filterByStyle && state.design) {
+                productsToRender = productsToRender.filter((product) =>
+                    product.compatibleStyles.includes(state.design.value)
+                );
+            }
+
+            if (productsToRender.length === 0) {
+                grid.innerHTML = `<p class="phase-description">Nenhum ${productType} compatível com o design selecionado.</p>`;
+                const btn = document.getElementById(`btnPhase${currentPhase}`);
+                if (btn) btn.disabled = true;
+                return;
+            }
+
+            productsToRender.forEach((product) => {
+                const card = createProductCard(product, productType.slice(0, -1)); // 'designs' -> 'design'
+                grid.appendChild(card);
+            });
+
+            const btn = document.getElementById(`btnPhase${currentPhase}`);
+            if (btn) btn.disabled = !state[productType.slice(0, -1)]; // Check if an item is selected
+        }
+
+        // ============================================
+        // LÓGICA DE FASES
+        // ============================================
+
+        function initApp() {
+            renderProducts('designsGrid', 'designs');
+            updateProgress();
+        }
+
+        function selectProduct(product, type, cardElement) {
+            // Desmarca todos os cards do mesmo tipo
+            document.querySelectorAll(`[data-phase="${currentPhase}"] .product-card`).forEach((card) => {
+                card.classList.remove('selected');
+            });
+
+            // Marca o card selecionado
+            cardElement.classList.add('selected');
+            state[type] = product;
+
+            // Habilita o botão "Próximo" para a fase atual
+            const btnId = `btnPhase${currentPhase}`;
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.disabled = false;
+            }
+        }
+
+        function nextPhase() {
+            // Validações antes de avançar
+            if (currentPhase === 1 && !state.design) {
+                showError('Por favor, selecione um design.');
+                return;
+            }
+            if (currentPhase === 2 && !state.post) {
+                showError('Por favor, selecione um poste.');
+                return;
+            }
+            if (currentPhase === 3 && !state.railing) {
+                showError('Por favor, selecione um corrimão.');
+                return;
+            }
+            if (currentPhase === 4 && !state.wood) {
+                showError('Por favor, selecione um tipo de madeira.');
+                return;
+            }
+            if (currentPhase === 5 && !state.spindle) {
+                showError('Por favor, selecione um spindle.');
+                return;
+            }
+            if (currentPhase === 6) {
+                const name = document.getElementById('clientName').value.trim();
+                const phone = document.getElementById('clientPhone').value.trim();
+                const location = document.getElementById('clientLocation').value.trim();
+
+                if (!name || !phone || !location) {
+                    showError('Por favor, preencha todos os dados.');
+                    return;
+                }
+
+                state.clientName = name;
+                state.clientPhone = phone;
+                state.clientLocation = location;
+            }
+
+            if (currentPhase < maxPhases) {
+                currentPhase++;
+                updatePhaseDisplay();
+            }
+        }
+
+        function prevPhase() {
+            if (currentPhase > 1) {
+                currentPhase--;
+                updatePhaseDisplay();
+            }
+        }
+
+        function updatePhaseDisplay() {
+            // Oculta todas as fases
+            document.querySelectorAll('.phase').forEach((phase) => {
+                phase.classList.remove('active');
+            });
+
+            // Mostra fase atual
+            const activePhaseElement = document.querySelector(`[data-phase="${currentPhase}"]`);
+            if (activePhaseElement) {
+                activePhaseElement.classList.add('active');
+            }
+
+            // Renderiza conteúdo específico da fase
+            switch (currentPhase) {
+                case 1: renderProducts('designsGrid', 'designs'); break;
+                case 2: renderProducts('postsGrid', 'posts', true); break;
+                case 3: renderProducts('railingsGrid', 'railings', true); break;
+                case 4: renderProducts('woodsGrid', 'woods'); break;
+                case 5: renderProducts('spindlesGrid', 'spindles', true); break;
+                case 6: 
+                    // Populate client data if previously entered
+                    document.getElementById('clientName').value = state.clientName;
+                    document.getElementById('clientPhone').value = state.clientPhone;
+                    document.getElementById('clientLocation').value = state.clientLocation;
+                    break;
+                case 7: updateSummary(); break;
+            }
+
+            updateProgress();
+            window.scrollTo(0, 0); // Rola para o topo da página ao mudar de fase
+        }
+
+        function updateProgress() {
+            const progress = (currentPhase / maxPhases) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('phaseBadge').textContent = `Fase ${currentPhase} de ${maxPhases}`;
+
+            // Atualiza status dos steps
+            document.querySelectorAll('.step').forEach((step, index) => {
+                const stepNum = index + 1;
+                step.classList.remove('active', 'completed');
+
+                if (stepNum === currentPhase) {
+                    step.classList.add('active');
+                } else if (stepNum < currentPhase) {
+                    step.classList.add('completed');
+                }
+            });
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            if (state.design) total += state.design.price;
+            if (state.post) total += state.post.price;
+            if (state.railing) total += state.railing.price;
+            if (state.wood) total += state.wood.price;
+            if (state.spindle) total += state.spindle.price;
+            return total;
+        }
+
+        function updateSummary() {
+            // Preenche o resumo textual
+            document.getElementById('summaryDesign').textContent = state.design?.name || '-';
+            document.getElementById('summaryPost').textContent = state.post?.name || '-';
+            document.getElementById('summaryRailing').textContent = state.railing?.name || '-';
+            document.getElementById('summaryWood').textContent = state.wood?.name || '-';
+            document.getElementById('summarySpindle').textContent = state.spindle?.name || '-';
+            document.getElementById('summaryClient').textContent = state.clientName || '-';
+
+            const total = calculateTotal();
+            document.getElementById('summaryTotal').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+
+            // Atualiza a visualização 2D
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const previewContent = document.getElementById('previewContent');
+            const previewDetails = document.getElementById('previewDetails');
+            
+            if (state.design && state.post && state.railing && state.wood && state.spindle) {
+                previewContent.innerHTML = `
+                    <p style="font-size: 2em;">${state.design.emoji} ${state.post.emoji} ${state.railing.emoji} ${state.wood.emoji} ${state.spindle.emoji}</p>
+                    <p>Seu Corrimão ${state.design.name} (${state.wood.name})</p>
+                `;
+            } else {
+                previewContent.innerHTML = '<p>Selecione todos os componentes para a visualização.</p>';
+            }
+
+            previewDetails.innerHTML = `
+                <strong>Configuração do Projeto:</strong><br>
+                Design: <strong>${state.design?.name || '-'}</strong><br>
+                Poste: <strong>${state.post?.name || '-'}</strong><br>
+                Corrimão: <strong>${state.railing?.name || '-'}</strong><br>
+                Madeira: <strong>${state.wood?.name || '-'}</strong><br>
+                Spindle: <strong>${state.spindle?.name || '-'}</strong><br>
+                <br>
+                <strong>Dados do Cliente:</strong><br>
+                Nome: <strong>${state.clientName || '-'}</strong><br>
+                Telefone: <strong>${state.clientPhone || '-'}</strong><br>
+                Localização: <strong>${state.clientLocation || '-'}</strong>
+            `;
+        }
+
+        // ============================================
+        // ENVIAR PEDIDO
+        // ============================================
+
+        function submitOrder() {
+            const orderId = generateOrderId();
+
+            const orderData = {
+                id: orderId,
+                design: { name: state.design?.name, value: state.design?.value, price: state.design?.price },
+                post: { name: state.post?.name, value: state.post?.value, price: state.post?.price },
+                railing: { name: state.railing?.name, value: state.railing?.value, price: state.railing?.price },
+                wood: { name: state.wood?.name, value: state.wood?.value, price: state.wood?.price },
+                spindle: { name: state.spindle?.name, value: state.spindle?.value, price: state.spindle?.price },
+                clientName: state.clientName,
+                clientPhone: state.clientPhone,
+                clientLocation: state.clientLocation,
+                totalPrice: calculateTotal(),
+                timestamp: new Date().toLocaleString()
+            };
+
+            orders.push(orderData);
+            localStorage.setItem('buildPickerOrders', JSON.stringify(orders));
+            console.log('Pedido salvo:', orderData);
+
+            document.getElementById('modalOrderId').textContent = orderId;
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        function resetForm() {
+            currentPhase = 1;
+            state.design = null;
+            state.post = null;
+            state.railing = null;
+            state.wood = null;
+            state.spindle = null;
+            state.clientName = '';
+            state.clientPhone = '';
+            state.clientLocation = '';
+
+            // Limpa campos do formulário
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('clientLocation').value = '';
+            
+            // Fecha modal de sucesso
+            document.getElementById('successModal').classList.remove('active');
+
+            // Reinicia a exibição
+            updatePhaseDisplay();
+        }
+
+        // ============================================
+        // PAINEL DE ADMINISTRAÇÃO
+        // ============================================
+
+        function showAdminPanel() {
+            document.getElementById('adminModal').classList.add('active');
+            document.getElementById('adminLoginSection').style.display = 'block';
+            document.getElementById('adminOrdersSection').style.display = 'none';
+            document.getElementById('adminPassword').value = ''; // Limpa o campo da senha
+            document.getElementById('adminPassword').focus(); // Foca no campo da senha
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminModal').classList.remove('active');
+        }
+
+        function loginAdmin() {
+            const passwordInput = document.getElementById('adminPassword');
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                showSuccess('Acesso ao painel administrativo concedido!');
+                document.getElementById('adminLoginSection').style.display = 'none';
+                document.getElementById('adminOrdersSection').style.display = 'block';
+                renderAdminOrders();
+            } else {
+                showError('Senha incorreta!');
+                passwordInput.value = '';
+            }
+        }
+
+        function logoutAdmin() {
+            showSuccess('Sessão admin encerrada.');
+            document.getElementById('adminOrdersSection').style.display = 'none';
+            document.getElementById('adminLoginSection').style.display = 'block';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function renderAdminOrders() {
+            const orderListElement = document.getElementById('orderList');
+            orders = JSON.parse(localStorage.getItem('buildPickerOrders')) || []; // Recarrega os pedidos
+
+            if (orders.length === 0) {
+                orderListElement.innerHTML = '<p class="modal-text">Nenhum pedido ainda.</p>';
+                return;
+            }
+
+            orderListElement.innerHTML = '';
+            orders.forEach(order => {
+                const orderItem = document.createElement('li');
+                orderItem.className = 'order-item';
+                orderItem.innerHTML = `
+                    <p><strong>ID do Pedido:</strong> ${order.id}</p>
+                    <p><strong>Cliente:</strong> ${order.clientName} (${order.clientPhone})</p>
+                    <p><strong>Localização:</strong> ${order.clientLocation}</p>
+                    <p><strong>Design:</strong> ${order.design?.name || '-'}</p>
+                    <p><strong>Poste:</strong> ${order.post?.name || '-'}</p>
+                    <p><strong>Corrimão:</strong> ${order.railing?.name || '-'}</p>
+                    <p><strong>Madeira:</strong> ${order.wood?.name || '-'}</p>
+                    <p><strong>Spindle:</strong> ${order.spindle?.name || '-'}</p>
+                    <p><strong>Valor Total:</strong> R$ ${order.totalPrice.toFixed(2).replace('.', ',')}</p>
+                    <p><strong>Data/Hora:</strong> ${order.timestamp}</p>
+                `;
+                orderListElement.appendChild(orderItem);
+            });
+        }
+
+        function clearAllOrders() {
+            if (confirm('Tem certeza que deseja limpar TODOS os pedidos? Esta ação é irreversível!')) {
+                localStorage.removeItem('buildPickerOrders');
+                orders = [];
+                renderAdminOrders();
+                showSuccess('Todos os pedidos foram removidos.');
+            }
+        }
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
+```
