@@ -470,15 +470,7 @@
                         <button class="yes-no-btn" id="bracketsYes">SIM</button>
                         <button class="yes-no-btn" id="bracketsNo">NÃO</button>
                     </div>
-                    <div class="form-group" id="bracketsOptions" style="display:none;">
-                        <label>Escolha o estilo</label>
-                        <select id="bracketsSelect">
-                            <option value="">-- Selecione --</option>
-                            <option value="Decorativo Ouro">Decorativo Ouro</option>
-                            <option value="Moderno Preto">Moderno Preto</option>
-                            <option value="Clássico Bronze">Clássico Bronze</option>
-                        </select>
-                    </div>
+                    <div class="options-grid" id="bracketsOptions" style="display:none;"></div>
                     <div class="buttons-row">
                         <button class="btn btn-secondary" id="back6">← Voltar</button>
                         <button class="btn btn-primary" id="next6" disabled>Próximo →</button>
@@ -486,7 +478,7 @@
                 </div>
             </div>
 
-            <!-- Step 7: Steps -->
+            <!-- Step 7: Steps - Main Question -->
             <div id="step7Screen" class="screen">
                 <div class="card">
                     <h1>Etapa 7 de 10: Degraus</h1>
@@ -496,32 +488,78 @@
                         <button class="yes-no-btn" id="stepsYes">SIM</button>
                         <button class="yes-no-btn" id="stepsNo">NÃO</button>
                     </div>
-                    <div id="stepsDetails" style="display:none;">
-                        <div class="form-group">
-                            <label>First step?</label>
-                            <div class="yes-no-container">
-                                <button class="yes-no-btn" id="firstStepYes" style="max-width:150px;">SIM</button>
-                                <button class="yes-no-btn" id="firstStepNo" style="max-width:150px;">NÃO</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Bordas</label>
-                            <div class="yes-no-container">
-                                <button class="yes-no-btn" id="edgesRound" style="max-width:150px;">Redondas</button>
-                                <button class="yes-no-btn" id="edgesSquare" style="max-width:150px;">Quadradas</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Risers</label>
-                            <div class="yes-no-container">
-                                <button class="yes-no-btn" id="risersPaint" style="max-width:150px;">Tinta</button>
-                                <button class="yes-no-btn" id="risersWood" style="max-width:150px;">Madeira</button>
-                            </div>
-                        </div>
-                    </div>
                     <div class="buttons-row">
                         <button class="btn btn-secondary" id="back7">← Voltar</button>
                         <button class="btn btn-primary" id="next7" disabled>Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7a: First Step -->
+            <div id="step7aScreen" class="screen">
+                <div class="card">
+                    <h1>Degraus: First Step</h1>
+                    <p class="subtitle">Sua casa tem first step?</p>
+                    <div class="progress-bar" id="progress7a"></div>
+                    <div class="yes-no-container">
+                        <button class="yes-no-btn" id="firstStepYes">
+                            <div style="font-size: 40px; margin-bottom: 10px;">📐</div>
+                            SIM
+                        </button>
+                        <button class="yes-no-btn" id="firstStepNo">
+                            <div style="font-size: 40px; margin-bottom: 10px;">🚫</div>
+                            NÃO
+                        </button>
+                    </div>
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" id="back7a">← Voltar</button>
+                        <button class="btn btn-primary" id="next7a" disabled>Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7b: Edges -->
+            <div id="step7bScreen" class="screen">
+                <div class="card">
+                    <h1>Degraus: Bordas</h1>
+                    <p class="subtitle">Como você gostaria das bordas?</p>
+                    <div class="progress-bar" id="progress7b"></div>
+                    <div class="yes-no-container">
+                        <button class="yes-no-btn" id="edgesRound">
+                            <div style="font-size: 40px; margin-bottom: 10px;">⭕</div>
+                            REDONDAS
+                        </button>
+                        <button class="yes-no-btn" id="edgesSquare">
+                            <div style="font-size: 40px; margin-bottom: 10px;">⬛</div>
+                            QUADRADAS
+                        </button>
+                    </div>
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" id="back7b">← Voltar</button>
+                        <button class="btn btn-primary" id="next7b" disabled>Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7c: Risers -->
+            <div id="step7cScreen" class="screen">
+                <div class="card">
+                    <h1>Degraus: Risers</h1>
+                    <p class="subtitle">Como serão os risers?</p>
+                    <div class="progress-bar" id="progress7c"></div>
+                    <div class="yes-no-container">
+                        <button class="yes-no-btn" id="risersPaint">
+                            <div style="font-size: 40px; margin-bottom: 10px;">🎨</div>
+                            TINTA
+                        </button>
+                        <button class="yes-no-btn" id="risersWood">
+                            <div style="font-size: 40px; margin-bottom: 10px;">🪵</div>
+                            MADEIRA
+                        </button>
+                    </div>
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" id="back7c">← Voltar</button>
+                        <button class="btn btn-primary" id="next7c" disabled>Próximo →</button>
                     </div>
                 </div>
             </div>
@@ -540,17 +578,39 @@
                 </div>
             </div>
 
-            <!-- Step 9: Spindle -->
+            <!-- Step 9: Spindle Type -->
             <div id="step9Screen" class="screen">
                 <div class="card">
                     <h1>Etapa 9 de 10: Spindles</h1>
                     <p class="subtitle">Madeira ou ferro?</p>
                     <div class="progress-bar" id="progress9"></div>
-                    <div class="options-grid" id="spindleTypeOptions"></div>
-                    <div class="options-grid" id="spindleStyleOptions" style="display:none;"></div>
+                    <div class="yes-no-container">
+                        <button class="yes-no-btn" id="spindleWood">
+                            <div style="font-size: 40px; margin-bottom: 10px;">🪵</div>
+                            MADEIRA
+                        </button>
+                        <button class="yes-no-btn" id="spindleIron">
+                            <div style="font-size: 40px; margin-bottom: 10px;">⚙️</div>
+                            FERRO
+                        </button>
+                    </div>
                     <div class="buttons-row">
                         <button class="btn btn-secondary" id="back9">← Voltar</button>
                         <button class="btn btn-primary" id="next9" disabled>Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 9a: Spindle Style -->
+            <div id="step9aScreen" class="screen">
+                <div class="card">
+                    <h1>Spindles: Estilo</h1>
+                    <p class="subtitle" id="spindleSubtitle">Escolha o estilo</p>
+                    <div class="progress-bar" id="progress9a"></div>
+                    <div class="options-grid" id="spindleStyleOptions"></div>
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" id="back9a">← Voltar</button>
+                        <button class="btn btn-primary" id="next9a" disabled>Próximo →</button>
                     </div>
                 </div>
             </div>
@@ -565,14 +625,7 @@
                         <button class="yes-no-btn" id="shoeYes">SIM</button>
                         <button class="yes-no-btn" id="shoeNo">NÃO</button>
                     </div>
-                    <div class="form-group" id="shoeOptions" style="display:none;">
-                        <label>Formato</label>
-                        <select id="shoeSelect">
-                            <option value="">-- Selecione --</option>
-                            <option value="Redondo">Redondo</option>
-                            <option value="Quadrado">Quadrado</option>
-                        </select>
-                    </div>
+                    <div class="options-grid" id="shoeOptions" style="display:none;"></div>
                     <div class="buttons-row">
                         <button class="btn btn-secondary" id="back10">← Voltar</button>
                         <button class="btn btn-primary" id="next10" disabled>Revisar →</button>
@@ -632,6 +685,19 @@
         } catch (e) {
             console.error('Erro ao carregar pedidos:', e);
         }
+
+        // Define shoe options
+        // Define brackets and shoe options separately
+        var bracketsList = [
+            { name: 'Decorativo Ouro', value: 'decorativo_ouro', icon: '✨' },
+            { name: 'Moderno Preto', value: 'moderno_preto', icon: '⬛' },
+            { name: 'Clássico Bronze', value: 'classico_bronze', icon: '🟫' }
+        ];
+
+        var shoeOptions = [
+            { name: 'Redondo', value: 'redondo', icon: '⭕' },
+            { name: 'Quadrado', value: 'quadrado', icon: '⬛' }
+        ];
 
         var config = {
             moods: [
@@ -748,7 +814,17 @@
 
         function renderOptions(items, containerId, callback) {
             var container = document.getElementById(containerId);
+            if (!container) {
+                console.error('Container não encontrado:', containerId);
+                return;
+            }
+            
             container.innerHTML = '';
+            
+            if (!items || items.length === 0) {
+                console.error('Items vazio ou indefinido:', items);
+                return;
+            }
             
             for (var i = 0; i < items.length; i++) {
                 var item = items[i];
@@ -781,11 +857,11 @@
             html += '<div class="review-item"><div class="review-label">Poste</div><div class="review-value">' + order.post.name + '</div></div>';
             html += '<div class="review-item"><div class="review-label">Corrimão</div><div class="review-value">' + order.railing.name + '</div></div>';
             html += '<div class="review-item"><div class="review-label">Rosette</div><div class="review-value">' + (order.rosette ? (order.rosetteStyle ? order.rosetteStyle.name : 'Sim') : 'Não') + '</div></div>';
-            html += '<div class="review-item"><div class="review-label">Brackets</div><div class="review-value">' + (order.brackets ? order.bracketsStyle : 'Não') + '</div></div>';
+            html += '<div class="review-item"><div class="review-label">Brackets</div><div class="review-value">' + (order.brackets ? order.bracketsStyle.name : 'Não') + '</div></div>';
             html += '<div class="review-item"><div class="review-label">Degraus</div><div class="review-value">' + (order.steps ? 'Sim' : 'Não') + '</div></div>';
             html += '<div class="review-item"><div class="review-label">Madeira</div><div class="review-value">' + order.wood.name + '</div></div>';
             html += '<div class="review-item"><div class="review-label">Spindles</div><div class="review-value">' + order.spindleStyle.name + '</div></div>';
-            html += '<div class="review-item"><div class="review-label">Shoe</div><div class="review-value">' + (order.shoe ? order.shoeStyle : 'Não') + '</div></div>';
+            html += '<div class="review-item"><div class="review-label">Shoe</div><div class="review-value">' + (order.shoe ? order.shoeStyle.name : 'Não') + '</div></div>';
             
             document.getElementById('reviewContent').innerHTML = html;
         }
@@ -933,7 +1009,14 @@
             order.brackets = true;
             document.querySelectorAll('#step6Screen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
-            document.getElementById('bracketsOptions').style.display = 'block';
+            document.getElementById('bracketsOptions').style.display = 'grid';
+            
+            console.log('Usando bracketsList:', bracketsList); // Debug
+            
+            renderOptions(bracketsList, 'bracketsOptions', function(item) {
+                order.bracketsStyle = item;
+                document.getElementById('next6').disabled = false;
+            });
             document.getElementById('next6').disabled = true;
         };
 
@@ -946,82 +1029,104 @@
             document.getElementById('next6').disabled = false;
         };
 
-        document.getElementById('bracketsSelect').onchange = function() {
-            order.bracketsStyle = this.value;
-            document.getElementById('next6').disabled = !this.value;
-        };
-
         document.getElementById('back6').onclick = function() { goToScreen('step5Screen'); };
         document.getElementById('next6').onclick = function() {
             createProgress('progress7', 7);
             goToScreen('step7Screen');
         };
 
-        // Step 7: Steps
+        // Step 7: Steps - Main
         document.getElementById('stepsYes').onclick = function() {
             order.steps = true;
-            document.querySelectorAll('#step7Screen > .card > .yes-no-container .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
+            document.querySelectorAll('#step7Screen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
-            document.getElementById('stepsDetails').style.display = 'block';
-            document.getElementById('next7').disabled = true;
+            document.getElementById('next7').disabled = false;
         };
 
         document.getElementById('stepsNo').onclick = function() {
             order.steps = false;
-            document.querySelectorAll('#step7Screen > .card > .yes-no-container .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
+            order.firstStep = null;
+            order.stepEdges = null;
+            order.stepRisers = null;
+            document.querySelectorAll('#step7Screen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
-            document.getElementById('stepsDetails').style.display = 'none';
             document.getElementById('next7').disabled = false;
         };
 
+        document.getElementById('back7').onclick = function() { goToScreen('step6Screen'); };
+        document.getElementById('next7').onclick = function() {
+            if (order.steps) {
+                createProgress('progress7a', 7);
+                goToScreen('step7aScreen');
+            } else {
+                createProgress('progress8', 8);
+                renderOptions(config.woods, 'woodOptions', function(item) {
+                    order.wood = item;
+                    document.getElementById('next8').disabled = false;
+                });
+                goToScreen('step8Screen');
+            }
+        };
+
+        // Step 7a: First Step
         document.getElementById('firstStepYes').onclick = function() {
             order.firstStep = true;
-            document.querySelectorAll('#stepsDetails .form-group:nth-child(1) .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
+            document.querySelectorAll('#step7aScreen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
+            document.getElementById('next7a').disabled = false;
         };
 
         document.getElementById('firstStepNo').onclick = function() {
             order.firstStep = false;
-            document.querySelectorAll('#stepsDetails .form-group:nth-child(1) .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
+            document.querySelectorAll('#step7aScreen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
+            document.getElementById('next7a').disabled = false;
         };
 
+        document.getElementById('back7a').onclick = function() { goToScreen('step7Screen'); };
+        document.getElementById('next7a').onclick = function() {
+            createProgress('progress7b', 7);
+            goToScreen('step7bScreen');
+        };
+
+        // Step 7b: Edges
         document.getElementById('edgesRound').onclick = function() {
             order.stepEdges = 'redondo';
-            document.querySelectorAll('#stepsDetails .form-group:nth-child(2) .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
+            document.querySelectorAll('#step7bScreen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
-            checkSteps();
+            document.getElementById('next7b').disabled = false;
         };
 
         document.getElementById('edgesSquare').onclick = function() {
             order.stepEdges = 'quadrado';
-            document.querySelectorAll('#stepsDetails .form-group:nth-child(2) .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
+            document.querySelectorAll('#step7bScreen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
-            checkSteps();
+            document.getElementById('next7b').disabled = false;
         };
 
+        document.getElementById('back7b').onclick = function() { goToScreen('step7aScreen'); };
+        document.getElementById('next7b').onclick = function() {
+            createProgress('progress7c', 7);
+            goToScreen('step7cScreen');
+        };
+
+        // Step 7c: Risers
         document.getElementById('risersPaint').onclick = function() {
             order.stepRisers = 'tinta';
-            document.querySelectorAll('#stepsDetails .form-group:nth-child(3) .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
+            document.querySelectorAll('#step7cScreen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
-            checkSteps();
+            document.getElementById('next7c').disabled = false;
         };
 
         document.getElementById('risersWood').onclick = function() {
             order.stepRisers = 'madeira';
-            document.querySelectorAll('#stepsDetails .form-group:nth-child(3) .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
+            document.querySelectorAll('#step7cScreen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
-            checkSteps();
+            document.getElementById('next7c').disabled = false;
         };
 
-        function checkSteps() {
-            if (order.stepEdges && order.stepRisers) {
-                document.getElementById('next7').disabled = false;
-            }
-        }
-
-        document.getElementById('back7').onclick = function() { goToScreen('step6Screen'); };
-        document.getElementById('next7').onclick = function() {
+        document.getElementById('back7c').onclick = function() { goToScreen('step7bScreen'); };
+        document.getElementById('next7c').onclick = function() {
             createProgress('progress8', 8);
             renderOptions(config.woods, 'woodOptions', function(item) {
                 order.wood = item;
@@ -1031,30 +1136,65 @@
         };
 
         // Step 8
-        document.getElementById('back8').onclick = function() { goToScreen('step7Screen'); };
+        document.getElementById('back8').onclick = function() { 
+            if (order.steps) {
+                goToScreen('step7cScreen');
+            } else {
+                goToScreen('step7Screen');
+            }
+        };
         document.getElementById('next8').onclick = function() {
             if (!order.wood) { alert('Selecione!'); return; }
             createProgress('progress9', 9);
-            var types = [
-                { name: 'Madeira', value: 'wood', icon: '🪵' },
-                { name: 'Ferro', value: 'iron', icon: '⚙️' }
-            ];
-            renderOptions(types, 'spindleTypeOptions', function(item) {
-                order.spindleType = item.value;
-                var styles = item.value === 'wood' ? config.spindlesWood : config.spindlesIron;
-                renderOptions(styles, 'spindleStyleOptions', function(style) {
-                    order.spindleStyle = style;
-                    document.getElementById('next9').disabled = false;
-                });
-                document.getElementById('spindleStyleOptions').style.display = 'grid';
-                document.getElementById('next9').disabled = true;
-            });
             goToScreen('step9Screen');
         };
 
-        // Step 9
+        // Step 9: Spindle Type
+        document.getElementById('spindleWood').onclick = function() {
+            order.spindleType = 'wood';
+            var allBtns = document.querySelectorAll('#step9Screen .yes-no-btn');
+            for (var i = 0; i < allBtns.length; i++) {
+                allBtns[i].classList.remove('selected');
+            }
+            this.classList.add('selected');
+            document.getElementById('next9').disabled = false;
+        };
+
+        document.getElementById('spindleIron').onclick = function() {
+            order.spindleType = 'iron';
+            var allBtns = document.querySelectorAll('#step9Screen .yes-no-btn');
+            for (var i = 0; i < allBtns.length; i++) {
+                allBtns[i].classList.remove('selected');
+            }
+            this.classList.add('selected');
+            document.getElementById('next9').disabled = false;
+        };
+
         document.getElementById('back9').onclick = function() { goToScreen('step8Screen'); };
         document.getElementById('next9').onclick = function() {
+            if (!order.spindleType) { 
+                alert('Selecione o tipo!'); 
+                return; 
+            }
+            
+            createProgress('progress9a', 9);
+            var styles = order.spindleType === 'wood' ? config.spindlesWood : config.spindlesIron;
+            var subtitle = order.spindleType === 'wood' ? 'Escolha o estilo de madeira' : 'Escolha o estilo de ferro';
+            document.getElementById('spindleSubtitle').textContent = subtitle;
+            
+            console.log('Renderizando estilos:', styles);
+            
+            renderOptions(styles, 'spindleStyleOptions', function(style) {
+                order.spindleStyle = style;
+                document.getElementById('next9a').disabled = false;
+            });
+            
+            goToScreen('step9aScreen');
+        };
+
+        // Step 9a: Spindle Style
+        document.getElementById('back9a').onclick = function() { goToScreen('step9Screen'); };
+        document.getElementById('next9a').onclick = function() {
             if (!order.spindleStyle) { alert('Selecione!'); return; }
             createProgress('progress10', 10);
             goToScreen('step10Screen');
@@ -1065,7 +1205,11 @@
             order.shoe = true;
             document.querySelectorAll('#step10Screen .yes-no-btn').forEach(function(b) { b.classList.remove('selected'); });
             this.classList.add('selected');
-            document.getElementById('shoeOptions').style.display = 'block';
+            document.getElementById('shoeOptions').style.display = 'grid';
+            renderOptions(shoeOptions, 'shoeOptions', function(item) {
+                order.shoeStyle = item;
+                document.getElementById('next10').disabled = false;
+            });
             document.getElementById('next10').disabled = true;
         };
 
@@ -1078,12 +1222,7 @@
             document.getElementById('next10').disabled = false;
         };
 
-        document.getElementById('shoeSelect').onchange = function() {
-            order.shoeStyle = this.value;
-            document.getElementById('next10').disabled = !this.value;
-        };
-
-        document.getElementById('back10').onclick = function() { goToScreen('step9Screen'); };
+        document.getElementById('back10').onclick = function() { goToScreen('step9aScreen'); };
         document.getElementById('next10').onclick = function() {
             buildReview();
             goToScreen('reviewScreen');
