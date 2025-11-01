@@ -919,6 +919,7 @@
             shoeStyle: null
         };
 
+
         const totalSteps = 10;
 
         // ============================================
@@ -999,6 +1000,7 @@
                 alert('Por favor, selecione uma subcategoria!');
                 return;
             }
+            const posts = config.posts[currentOrder.subcategory.value];
             generateOptions(posts, 'postOptions', 'selectPost');
             goToScreen('step2Screen');
         }
@@ -1007,6 +1009,7 @@
             const card = document.querySelectorAll('#postOptions .option-card')[index];
             document.querySelectorAll('#postOptions .option-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
+            const posts = config.posts[currentOrder.subcategory.value];
             currentOrder.post = posts[index];
             document.getElementById('btn2').disabled = false;
         }
@@ -1016,6 +1019,7 @@
                 alert('Por favor, selecione um poste!');
                 return;
             }
+            const railings = config.railings[currentOrder.subcategory.value];
             generateOptions(railings, 'railingOptions', 'selectRailing');
             goToScreen('step3Screen');
         }
@@ -1024,6 +1028,7 @@
             const card = document.querySelectorAll('#railingOptions .option-card')[index];
             document.querySelectorAll('#railingOptions .option-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
+            const railings = config.railings[currentOrder.subcategory.value];
             currentOrder.railing = railings[index];
             document.getElementById('btn3').disabled = false;
         }
@@ -1282,6 +1287,7 @@
                 </div>
                 <div class="review-item">
                     <div class="review-label">Brackets</div>
+                    <div class="review-value">${currentOrder.brackets ? currentOrder.bracketsStyle : 'Não'}</div>
                 </div>
                 <div class="review-item">
                     <div class="review-label">Degraus (Steps)</div>
@@ -1402,7 +1408,7 @@
                 return;
             }
 
-            ordersList.innerHTML = orders.reverse().map(order => {
+            ordersList.innerHTML = [...orders].reverse().map(order => {
                 const date = new Date(order.date);
                 return `
                     <div class="order-card">
