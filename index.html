@@ -622,6 +622,17 @@
     </div>
 
     <script>
+        // Initialize orders array
+        var orders = [];
+        try {
+            var stored = localStorage.getItem('buildpicker_orders');
+            if (stored) {
+                orders = JSON.parse(stored);
+            }
+        } catch (e) {
+            console.error('Erro ao carregar pedidos:', e);
+        }
+
         var config = {
             moods: [
                 { name: 'Clássico', value: 'classico', icon: '👑' },
@@ -828,6 +839,7 @@
             var phone = document.getElementById('customerPhone').value.trim();
             var address = document.getElementById('customerAddress').value.trim();
 
+            if (!name || !phone || !address) {
                 alert('Preencha todos os campos!');
                 return;
             }
