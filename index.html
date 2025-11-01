@@ -452,9 +452,7 @@
             </div>
         </header>
 
-        <!-- Customer Screen -->
         <div id="customerScreen">
-            <!-- Welcome Screen -->
             <div id="welcomeScreen" class="screen active">
                 <div class="card">
                     <h1>Bem-vindo ao BuildPicker</h1>
@@ -476,23 +474,17 @@
                     </div>
 
                     <div class="buttons-row">
-                        <button class="btn btn-primary" id="btnStart">
-                            Começar Configuração →
-                        </button>
+                        <button class="btn btn-primary" id="btnStart">Começar Configuração →</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Step 1: Mood Selection -->
             <div id="step1Screen" class="screen">
                 <div class="card">
                     <h1>Etapa 1 de 10: Escolha o Mood</h1>
                     <p class="subtitle">Qual estilo conversa mais com você?</p>
-                    
                     <div class="progress-bar" id="progressBar1"></div>
-
                     <div class="options-grid" id="moodOptions"></div>
-
                     <div class="buttons-row">
                         <button class="btn btn-secondary" id="backToWelcome">← Voltar</button>
                         <button class="btn btn-primary" id="btn1" disabled>Próximo →</button>
@@ -500,247 +492,13 @@
                 </div>
             </div>
 
-            <!-- Step 1b: Subcategory Selection -->
-            <div id="step1bScreen" class="screen">
-                <div class="card">
-                    <h1>Etapa 1b: Escolha a Subcategoria</h1>
-                    <p class="subtitle">Qual desses estilos combina mais com seu projeto?</p>
-                    
-                    <div class="progress-bar" id="progressBar1b"></div>
-
-                    <div class="options-grid" id="subcategoryOptions"></div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep1">← Voltar</button>
-                        <button class="btn btn-primary" id="btn1b" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 2: Post Selection -->
-            <div id="step2Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 2 de 10: Escolha do Poste</h1>
-                    <p class="subtitle">Selecione o estilo de poste que prefere</p>
-                    
-                    <div class="progress-bar" id="progressBar2"></div>
-
-                    <div class="options-grid" id="postOptions"></div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep1b">← Voltar</button>
-                        <button class="btn btn-primary" id="btn2" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 3: Railing Selection -->
-            <div id="step3Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 3 de 10: Escolha do Corrimão</h1>
-                    <p class="subtitle">Qual estilo de corrimão você prefere?</p>
-                    
-                    <div class="progress-bar" id="progressBar3"></div>
-
-                    <div class="options-grid" id="railingOptions"></div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep2">← Voltar</button>
-                        <button class="btn btn-primary" id="btn3" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 4: Rosette Question -->
-            <div id="step4Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 4 de 10: Rosette</h1>
-                    <p class="subtitle">Você gostaria de adicionar rosette?</p>
-                    
-                    <div class="progress-bar" id="progressBar4"></div>
-
-                    <div class="yes-no-container">
-                        <button class="yes-no-btn" id="rosetteYes">SIM</button>
-                        <button class="yes-no-btn" id="rosetteNo">NÃO</button>
-                    </div>
-
-                    <div class="options-grid" id="rosetteOptions" style="display: none;"></div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep3">← Voltar</button>
-                        <button class="btn btn-primary" id="btn4" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 5: Brackets Question -->
-            <div id="step5Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 5 de 10: Brackets</h1>
-                    <p class="subtitle">Você gostaria de adicionar brackets?</p>
-                    
-                    <div class="progress-bar" id="progressBar5"></div>
-
-                    <div class="yes-no-container">
-                        <button class="yes-no-btn" id="bracketsYes">SIM</button>
-                        <button class="yes-no-btn" id="bracketsNo">NÃO</button>
-                    </div>
-
-                    <div class="form-group" id="bracketsOptions" style="display: none;">
-                        <label>Escolha o Estilo e Cor do Bracket</label>
-                        <select id="bracketsSelect">
-                            <option value="">-- Selecione --</option>
-                            <option value="Decorativo Ouro">Decorativo Ouro</option>
-                            <option value="Moderno Preto">Moderno Preto</option>
-                            <option value="Clássico Bronze">Clássico Bronze</option>
-                            <option value="Minimalista Prata">Minimalista Prata</option>
-                        </select>
-                    </div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep4">← Voltar</button>
-                        <button class="btn btn-primary" id="btn5" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 6: Steps Question -->
-            <div id="step6Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 6 de 10: Steps (Degraus)</h1>
-                    <p class="subtitle">Você vai mexer nos steps da escada?</p>
-                    
-                    <div class="progress-bar" id="progressBar6"></div>
-
-                    <div class="yes-no-container">
-                        <button class="yes-no-btn" id="stepsYes">SIM</button>
-                        <button class="yes-no-btn" id="stepsNo">NÃO</button>
-                    </div>
-
-                    <div id="stepsOptionsContainer" style="display: none;">
-                        <div class="form-group">
-                            <label>Tem first step (degrau diferente no início)?</label>
-                            <div class="yes-no-container">
-                                <button class="yes-no-btn" id="firstStepYes" style="max-width: 150px;">SIM</button>
-                                <button class="yes-no-btn" id="firstStepNo" style="max-width: 150px;">NÃO</button>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Você gostaria das bordas dos degraus redondas ou quadradas?</label>
-                            <div class="yes-no-container">
-                                <button class="yes-no-btn" id="edgesRound" style="max-width: 150px;">Redondas</button>
-                                <button class="yes-no-btn" id="edgesSquare" style="max-width: 150px;">Quadradas</button>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Estilo dos risers (parte embaixo do degrau)</label>
-                            <div class="yes-no-container">
-                                <button class="yes-no-btn" id="risersPaint" style="max-width: 150px;">Tinta Branca</button>
-                                <button class="yes-no-btn" id="risersWood" style="max-width: 150px;">Madeira</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep5">← Voltar</button>
-                        <button class="btn btn-primary" id="btn6" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 7: Wood Selection -->
-            <div id="step7Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 7 de 10: Escolha da Madeira</h1>
-                    <p class="subtitle">Qual tipo de madeira você prefere?</p>
-                    
-                    <div class="progress-bar" id="progressBar7"></div>
-
-                    <div class="options-grid" id="woodOptions"></div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep6">← Voltar</button>
-                        <button class="btn btn-primary" id="btn7" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 8: Spindle Selection -->
-            <div id="step8Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 8 de 10: Escolha do Spindle</h1>
-                    <p class="subtitle">Você prefere spindles de madeira ou ferro?</p>
-                    
-                    <div class="progress-bar" id="progressBar8"></div>
-
-                    <div class="options-grid" id="spindleTypeOptions"></div>
-
-                    <div class="options-grid" id="spindleStyleOptions" style="display: none;"></div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep7">← Voltar</button>
-                        <button class="btn btn-primary" id="btn8" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 9: Shoe Question -->
-            <div id="step9Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 9 de 10: Shoe</h1>
-                    <p class="subtitle">Você gostaria de adicionar shoe?</p>
-                    
-                    <div class="progress-bar" id="progressBar9"></div>
-
-                    <div class="yes-no-container">
-                        <button class="yes-no-btn" id="shoeYes">SIM</button>
-                        <button class="yes-no-btn" id="shoeNo">NÃO</button>
-                    </div>
-
-                    <div class="form-group" id="shoeOptions" style="display: none;">
-                        <label>Qual formato você prefere?</label>
-                        <select id="shoeSelect">
-                            <option value="">-- Selecione --</option>
-                            <option value="Redondo">Redondo</option>
-                            <option value="Quadrado">Quadrado</option>
-                        </select>
-                    </div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep8">← Voltar</button>
-                        <button class="btn btn-primary" id="btn9" disabled>Próximo →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 10: Review -->
-            <div id="step10Screen" class="screen">
-                <div class="card">
-                    <h1>Etapa 10 de 10: Revisão do Pedido</h1>
-                    <p class="subtitle">Confira todos os detalhes antes de confirmar</p>
-                    
-                    <div class="progress-bar" id="progressBar10"></div>
-
-                    <div id="reviewContent" style="max-height: 500px; overflow-y: auto;"></div>
-
-                    <div class="buttons-row">
-                        <button class="btn btn-secondary" id="backToStep9">← Editar</button>
-                        <button class="btn btn-success" id="btnConfirm">✓ Confirmar Pedido</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Confirmation Screen -->
             <div id="confirmationScreen" class="screen">
                 <div class="card">
                     <div class="confirmation-box">
                         <div class="success-icon">✓</div>
                         <h1>Pedido Confirmado!</h1>
                         <div class="order-number" id="orderNumberDisplay">#0000</div>
-                        <p class="subtitle">Seu pedido foi registrado com sucesso. Nossa equipe entrará em contato em breve!</p>
-                        
+                        <p class="subtitle">Seu pedido foi registrado com sucesso!</p>
                         <div class="buttons-row" style="justify-content: center; margin-top: 40px;">
                             <button class="btn btn-primary" id="btnNewOrder">Novo Pedido</button>
                         </div>
@@ -749,177 +507,33 @@
             </div>
         </div>
 
-        <!-- Admin Screen -->
         <div id="adminScreen" style="display: none;">
             <div class="card">
                 <div class="admin-header">
                     <h1>Painel de Pedidos</h1>
                     <button class="btn btn-secondary" id="btnBackToCustomer">← Voltar</button>
                 </div>
-                
                 <div id="ordersList"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ============================================
-        // DATABASE CONFIGURATION
-        // ============================================
-
         const config = {
             moods: [
                 { name: 'Clássico e Elegante', value: 'classico', icon: '👑' },
                 { name: 'Moderno e Minimalista', value: 'moderno', icon: '🏢' },
                 { name: 'Rústico e Aconchegante', value: 'rustico', icon: '🏡' }
-            ],
-            subcategories: {
-                classico: [
-                    { name: 'Colonial', value: 'colonial', icon: '🏛️' },
-                    { name: 'Banker Hill', value: 'bankerhill', icon: '🏰' },
-                    { name: 'Georgia', value: 'georgia', icon: '⚜️' }
-                ],
-                moderno: [
-                    { name: 'Contemporâneo', value: 'contemporaneo', icon: '🎨' },
-                    { name: 'Hampton', value: 'hampton', icon: '🌊' },
-                    { name: 'Ohio', value: 'ohio', icon: '⚡' }
-                ],
-                rustico: [
-                    { name: 'Farmhouse', value: 'farmhouse', icon: '🌾' },
-                    { name: 'Box Newels', value: 'boxnewels', icon: '📦' },
-                    { name: 'Utah', value: 'utah', icon: '🏔️' }
-                ]
-            },
-            posts: {
-                colonial: [
-                    { name: 'Poste Clássico Ornamentado', value: 'classico-ornamentado', icon: '🏛️' },
-                    { name: 'Poste Tradicional', value: 'tradicional', icon: '📐' }
-                ],
-                bankerhill: [
-                    { name: 'Poste Bankerhill', value: 'bankerhill', icon: '🏰' },
-                    { name: 'Poste Elegante', value: 'elegante', icon: '✨' }
-                ],
-                georgia: [
-                    { name: 'Poste Georgia', value: 'georgia', icon: '🏛️' },
-                    { name: 'Poste Detalhado', value: 'detalhado', icon: '💎' }
-                ],
-                contemporaneo: [
-                    { name: 'Poste Contemporâneo', value: 'contemporaneo', icon: '▢' },
-                    { name: 'Poste Minimalista', value: 'minimalista', icon: '◾' }
-                ],
-                hampton: [
-                    { name: 'Poste Hampton', value: 'hampton', icon: '🌊' },
-                    { name: 'Poste Costeiro', value: 'costeiro', icon: '⛵' }
-                ],
-                ohio: [
-                    { name: 'Poste Ohio', value: 'ohio', icon: '⚡' },
-                    { name: 'Poste Moderno', value: 'moderno-post', icon: '🔧' }
-                ],
-                farmhouse: [
-                    { name: 'Poste Fazenda', value: 'fazenda', icon: '🌾' },
-                    { name: 'Poste Rústico', value: 'rustico', icon: '🪵' }
-                ],
-                boxnewels: [
-                    { name: 'Poste Box Newels', value: 'box', icon: '📦' },
-                    { name: 'Poste Estruturado', value: 'estruturado', icon: '🔲' }
-                ],
-                utah: [
-                    { name: 'Poste Utah', value: 'utah', icon: '🏔️' },
-                    { name: 'Poste Montanha', value: 'montanha', icon: '⛰️' }
-                ]
-            },
-            railings: {
-                colonial: [
-                    { name: 'Corrimão Colonial', value: 'colonial-rail', icon: '━' },
-                    { name: 'Corrimão Clássico', value: 'classico-rail', icon: '═' }
-                ],
-                bankerhill: [
-                    { name: 'Corrimão Bankerhill', value: 'bankerhill-rail', icon: '━' },
-                    { name: 'Corrimão Elegante', value: 'elegante-rail', icon: '─' }
-                ],
-                georgia: [
-                    { name: 'Corrimão Georgia', value: 'georgia-rail', icon: '═' },
-                    { name: 'Corrimão Ornamentado', value: 'ornamentado-rail', icon: '▬' }
-                ],
-                contemporaneo: [
-                    { name: 'Corrimão Contemporâneo', value: 'contemp-rail', icon: '─' },
-                    { name: 'Corrimão Linear', value: 'linear-rail', icon: '━' }
-                ],
-                hampton: [
-                    { name: 'Corrimão Hampton', value: 'hampton-rail', icon: '═' },
-                    { name: 'Corrimão Costeiro', value: 'costeiro-rail', icon: '─' }
-                ],
-                ohio: [
-                    { name: 'Corrimão Ohio', value: 'ohio-rail', icon: '━' },
-                    { name: 'Corrimão Moderno', value: 'moderno-rail', icon: '▬' }
-                ],
-                farmhouse: [
-                    { name: 'Corrimão Fazenda', value: 'fazenda-rail', icon: '═' },
-                    { name: 'Corrimão Rústico', value: 'rustico-rail', icon: '─' }
-                ],
-                boxnewels: [
-                    { name: 'Corrimão Box', value: 'box-rail', icon: '━' },
-                    { name: 'Corrimão Estruturado', value: 'estruturado-rail', icon: '▬' }
-                ],
-                utah: [
-                    { name: 'Corrimão Utah', value: 'utah-rail', icon: '═' },
-                    { name: 'Corrimão Montanha', value: 'montanha-rail', icon: '─' }
-                ]
-            },
-            rosettes: [
-                { name: 'Rosette Clássica', value: 'classica', icon: '⭕' },
-                { name: 'Rosette Ornamentada', value: 'ornamentada', icon: '✿' },
-                { name: 'Rosette Moderna', value: 'moderna', icon: '◯' }
-            ],
-            woods: [
-                { name: 'Madeira Vermelha (Red Oak)', value: 'vermelho', icon: '🟤' },
-                { name: 'Madeira Branca (White Oak)', value: 'branca', icon: '⚪' }
-            ],
-            spindlesWood: [
-                { name: 'Spindle Madeira Torneado', value: 'torneado', icon: '🪵' },
-                { name: 'Spindle Madeira Reto', value: 'reto', icon: '║' },
-                { name: 'Spindle Madeira Decorativo', value: 'decorativo', icon: '🎯' }
-            ],
-            spindlesIron: [
-                { name: 'Spindle Ferro Clássico', value: 'classico-iron', icon: '⚙️' },
-                { name: 'Spindle Ferro Moderno', value: 'moderno-iron', icon: '⚡' },
-                { name: 'Spindle Ferro Decorativo', value: 'decorativo-iron', icon: '✨' }
             ]
         };
-
-        // ============================================
-        // STATE MANAGEMENT
-        // ============================================
 
         let currentOrder = {
             customerName: '',
             customerPhone: '',
             customerAddress: '',
-            mood: null,
-            subcategory: null,
-            post: null,
-            railing: null,
-            rosette: null,
-            rosetteStyle: null,
-            brackets: null,
-            bracketsStyle: null,
-            steps: null,
-            firstStep: null,
-            stepEdges: null,
-            stepRisers: null,
-            wood: null,
-            spindleType: null,
-            spindleStyle: null,
-            shoe: null,
-            shoeStyle: null
+            mood: null
         };
 
-
-        const totalSteps = 10;
-
-        // ============================================
-        // UTILITIES
-        // ============================================
 
         function goToScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -927,30 +541,17 @@
             window.scrollTo(0, 0);
         }
 
-        function createProgressBar() {
-            const bars = document.querySelectorAll('[id^="progressBar"]');
-            bars.forEach(bar => {
-                bar.innerHTML = '';
-                for (let i = 0; i < totalSteps; i++) {
-                    const step = document.createElement('div');
-                    step.className = 'progress-step';
-                    bar.appendChild(step);
-                }
-            });
-        }
-
         function renderOptions(items, containerId, onSelect) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
-            items.forEach((item, index) => {
+            items.forEach(function(item, index) {
                 const card = document.createElement('div');
                 card.className = 'option-card';
-                card.innerHTML = `
-                    <div class="option-image">${item.icon}</div>
-                    <div class="option-name">${item.name}</div>
-                `;
-                card.onclick = () => {
-                    container.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                card.innerHTML = '<div class="option-image">' + item.icon + '</div><div class="option-name">' + item.name + '</div>';
+                card.onclick = function() {
+                    container.querySelectorAll('.option-card').forEach(function(c) {
+                        c.classList.remove('selected');
+                    });
                     card.classList.add('selected');
                     onSelect(item, index);
                 };
@@ -958,11 +559,6 @@
             });
         }
 
-        // ============================================
-        // EVENT LISTENERS
-        // ============================================
-
-        // Admin
         document.getElementById('adminIcon').onclick = function() {
             const customerScreen = document.getElementById('customerScreen');
             const adminScreen = document.getElementById('adminScreen');
@@ -972,7 +568,6 @@
                 if (password === 'admin') {
                     customerScreen.style.display = 'none';
                     adminScreen.style.display = 'block';
-                    loadOrders();
                 } else if (password !== null) {
                     alert('Senha incorreta!');
                 }
@@ -984,7 +579,6 @@
             document.getElementById('adminScreen').style.display = 'none';
         };
 
-        // Start
         document.getElementById('btnStart').onclick = function() {
             const name = document.getElementById('customerName').value.trim();
             const phone = document.getElementById('customerPhone').value.trim();
@@ -998,7 +592,7 @@
             currentOrder.customerPhone = phone;
             currentOrder.customerAddress = address;
 
-            renderOptions(config.moods, 'moodOptions', (item) => {
+            renderOptions(config.moods, 'moodOptions', function(item) {
                 currentOrder.mood = item;
                 document.getElementById('btn1').disabled = false;
             });
@@ -1006,331 +600,23 @@
             goToScreen('step1Screen');
         };
 
-        // Navigation
-        document.getElementById('backToWelcome').onclick = () => goToScreen('welcomeScreen');
-        document.getElementById('backToStep1').onclick = () => goToScreen('step1Screen');
-        document.getElementById('backToStep1b').onclick = () => goToScreen('step1bScreen');
-        document.getElementById('backToStep2').onclick = () => goToScreen('step2Screen');
-        document.getElementById('backToStep3').onclick = () => goToScreen('step3Screen');
-        document.getElementById('backToStep4').onclick = () => goToScreen('step4Screen');
-        document.getElementById('backToStep5').onclick = () => goToScreen('step5Screen');
-        document.getElementById('backToStep6').onclick = () => goToScreen('step6Screen');
-        document.getElementById('backToStep7').onclick = () => goToScreen('step7Screen');
-        document.getElementById('backToStep8').onclick = () => goToScreen('step8Screen');
-        document.getElementById('backToStep9').onclick = () => goToScreen('step9Screen');
+        document.getElementById('backToWelcome').onclick = function() {
+            goToScreen('welcomeScreen');
+        };
 
-        // Step 1: Mood
         document.getElementById('btn1').onclick = function() {
             if (!currentOrder.mood) {
                 alert('Selecione um mood!');
                 return;
             }
 
-            const subs = config.subcategories[currentOrder.mood.value];
-            renderOptions(subs, 'subcategoryOptions', (item) => {
-                currentOrder.subcategory = item;
-                document.getElementById('btn1b').disabled = false;
-            });
-
-            goToScreen('step1bScreen');
-        };
-
-        // Step 1b: Subcategory
-        document.getElementById('btn1b').onclick = function() {
-            if (!currentOrder.subcategory) {
-                alert('Selecione uma subcategoria!');
-                return;
-            }
-
-            const posts = config.posts[currentOrder.subcategory.value];
-            renderOptions(posts, 'postOptions', (item) => {
-                currentOrder.post = item;
-                document.getElementById('btn2').disabled = false;
-            });
-
-            goToScreen('step2Screen');
-        };
-
-        // Step 2: Post
-        document.getElementById('btn2').onclick = function() {
-            if (!currentOrder.post) {
-                alert('Selecione um poste!');
-                return;
-            }
-
-            const railings = config.railings[currentOrder.subcategory.value];
-            renderOptions(railings, 'railingOptions', (item) => {
-                currentOrder.railing = item;
-                document.getElementById('btn3').disabled = false;
-            });
-
-            goToScreen('step3Screen');
-        };
-
-        // Step 3: Railing
-        document.getElementById('btn3').onclick = function() {
-            if (!currentOrder.railing) {
-                alert('Selecione um corrimão!');
-                return;
-            }
-            goToScreen('step4Screen');
-        };
-
-        // Step 4: Rosette
-        document.getElementById('rosetteYes').onclick = function() {
-            currentOrder.rosette = true;
-            document.querySelectorAll('#step4Screen .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            
-            const container = document.getElementById('rosetteOptions');
-            container.style.display = 'grid';
-            renderOptions(config.rosettes, 'rosetteOptions', (item) => {
-                currentOrder.rosetteStyle = item;
-                document.getElementById('btn4').disabled = false;
-            });
-            document.getElementById('btn4').disabled = true;
-        };
-
-        document.getElementById('rosetteNo').onclick = function() {
-            currentOrder.rosette = false;
-            currentOrder.rosetteStyle = null;
-            document.querySelectorAll('#step4Screen .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('rosetteOptions').style.display = 'none';
-            document.getElementById('btn4').disabled = false;
-        };
-
-        document.getElementById('btn4').onclick = () => goToScreen('step5Screen');
-
-        // Step 5: Brackets
-        document.getElementById('bracketsYes').onclick = function() {
-            currentOrder.brackets = true;
-            document.querySelectorAll('#step5Screen .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('bracketsOptions').style.display = 'block';
-            document.getElementById('btn5').disabled = true;
-        };
-
-        document.getElementById('bracketsNo').onclick = function() {
-            currentOrder.brackets = false;
-            currentOrder.bracketsStyle = null;
-            document.querySelectorAll('#step5Screen .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('bracketsOptions').style.display = 'none';
-            document.getElementById('btn5').disabled = false;
-        };
-
-        document.getElementById('bracketsSelect').onchange = function() {
-            currentOrder.bracketsStyle = this.value;
-            document.getElementById('btn5').disabled = !this.value;
-        };
-
-        document.getElementById('btn5').onclick = () => goToScreen('step6Screen');
-
-        // Step 6: Steps
-        document.getElementById('stepsYes').onclick = function() {
-            currentOrder.steps = true;
-            document.querySelectorAll('#step6Screen > .card > .yes-no-container .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('stepsOptionsContainer').style.display = 'block';
-            document.getElementById('btn6').disabled = true;
-        };
-
-        document.getElementById('stepsNo').onclick = function() {
-            currentOrder.steps = false;
-            document.querySelectorAll('#step6Screen > .card > .yes-no-container .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('stepsOptionsContainer').style.display = 'none';
-            document.getElementById('btn6').disabled = false;
-        };
-
-        document.getElementById('firstStepYes').onclick = function() {
-            currentOrder.firstStep = true;
-            document.querySelectorAll('#stepsOptionsContainer .form-group:nth-child(1) .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-        };
-
-        document.getElementById('firstStepNo').onclick = function() {
-            currentOrder.firstStep = false;
-            document.querySelectorAll('#stepsOptionsContainer .form-group:nth-child(1) .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-        };
-
-        document.getElementById('edgesRound').onclick = function() {
-            currentOrder.stepEdges = 'redondo';
-            document.querySelectorAll('#stepsOptionsContainer .form-group:nth-child(2) .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            checkStepsComplete();
-        };
-
-        document.getElementById('edgesSquare').onclick = function() {
-            currentOrder.stepEdges = 'quadrado';
-            document.querySelectorAll('#stepsOptionsContainer .form-group:nth-child(2) .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            checkStepsComplete();
-        };
-
-        document.getElementById('risersPaint').onclick = function() {
-            currentOrder.stepRisers = 'tinta-branca';
-            document.querySelectorAll('#stepsOptionsContainer .form-group:nth-child(3) .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            checkStepsComplete();
-        };
-
-        document.getElementById('risersWood').onclick = function() {
-            currentOrder.stepRisers = 'madeira';
-            document.querySelectorAll('#stepsOptionsContainer .form-group:nth-child(3) .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            checkStepsComplete();
-        };
-
-        function checkStepsComplete() {
-            if (currentOrder.stepEdges && currentOrder.stepRisers) {
-                document.getElementById('btn6').disabled = false;
-            }
-        }
-
-        document.getElementById('btn6').onclick = function() {
-            renderOptions(config.woods, 'woodOptions', (item) => {
-                currentOrder.wood = item;
-                document.getElementById('btn7').disabled = false;
-            });
-            goToScreen('step7Screen');
-        };
-
-        // Step 7: Wood
-        document.getElementById('btn7').onclick = function() {
-            if (!currentOrder.wood) {
-                alert('Selecione uma madeira!');
-                return;
-            }
-
-            const spindleTypes = [
-                { name: 'Madeira', value: 'wood', icon: '🪵' },
-                { name: 'Ferro', value: 'iron', icon: '⚙️' }
-            ];
-
-            renderOptions(spindleTypes, 'spindleTypeOptions', (item) => {
-                currentOrder.spindleType = item.value;
-                const styles = item.value === 'wood' ? config.spindlesWood : config.spindlesIron;
-                
-                renderOptions(styles, 'spindleStyleOptions', (styleItem) => {
-                    currentOrder.spindleStyle = styleItem;
-                    document.getElementById('btn8').disabled = false;
-                });
-
-                document.getElementById('spindleStyleOptions').style.display = 'grid';
-                document.getElementById('btn8').disabled = true;
-            });
-
-            goToScreen('step8Screen');
-        };
-
-        // Step 8: Spindle
-        document.getElementById('btn8').onclick = function() {
-            if (!currentOrder.spindleStyle) {
-                alert('Selecione um spindle!');
-                return;
-            }
-            goToScreen('step9Screen');
-        };
-
-        // Step 9: Shoe
-        document.getElementById('shoeYes').onclick = function() {
-            currentOrder.shoe = true;
-            document.querySelectorAll('#step9Screen .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('shoeOptions').style.display = 'block';
-            document.getElementById('btn9').disabled = true;
-        };
-
-        document.getElementById('shoeNo').onclick = function() {
-            currentOrder.shoe = false;
-            currentOrder.shoeStyle = null;
-            document.querySelectorAll('#step9Screen .yes-no-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('shoeOptions').style.display = 'none';
-            document.getElementById('btn9').disabled = false;
-        };
-
-        document.getElementById('shoeSelect').onchange = function() {
-            currentOrder.shoeStyle = this.value;
-            document.getElementById('btn9').disabled = !this.value;
-        };
-
-        document.getElementById('btn9').onclick = function() {
-            buildReview();
-            goToScreen('step10Screen');
-        };
-
-        // Step 10: Review
-        function buildReview() {
-            const content = document.getElementById('reviewContent');
-            content.innerHTML = `
-                <h2 style="color: var(--texto-principal); margin-bottom: 20px;">Dados do Cliente</h2>
-                <div class="review-item">
-                    <div class="review-label">Nome</div>
-                    <div class="review-value">${currentOrder.customerName}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Telefone</div>
-                    <div class="review-value">${currentOrder.customerPhone}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Endereço</div>
-                    <div class="review-value">${currentOrder.customerAddress}</div>
-                </div>
-
-                <h2 style="color: var(--texto-principal); margin: 30px 0 20px 0; border-top: 2px solid var(--bg-hover); padding-top: 20px;">Configuração do Projeto</h2>
-                <div class="review-item">
-                    <div class="review-label">Mood</div>
-                    <div class="review-value">${currentOrder.mood.name}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Subcategoria</div>
-                    <div class="review-value">${currentOrder.subcategory.name}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Poste</div>
-                    <div class="review-value">${currentOrder.post.name}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Corrimão</div>
-                    <div class="review-value">${currentOrder.railing.name}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Rosette</div>
-                    <div class="review-value">${currentOrder.rosette ? (currentOrder.rosetteStyle ? currentOrder.rosetteStyle.name : 'Sim') : 'Não'}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Brackets</div>
-                    <div class="review-value">${currentOrder.brackets ? currentOrder.bracketsStyle : 'Não'}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Degraus (Steps)</div>
-                    <div class="review-value">${currentOrder.steps ? `Sim - Bordas: ${currentOrder.stepEdges}, Risers: ${currentOrder.stepRisers}` : 'Não'}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Madeira</div>
-                    <div class="review-value">${currentOrder.wood.name}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Spindles</div>
-                    <div class="review-value">${currentOrder.spindleStyle.name}</div>
-                </div>
-                <div class="review-item">
-                    <div class="review-label">Shoe</div>
-                    <div class="review-value">${currentOrder.shoe ? currentOrder.shoeStyle : 'Não'}</div>
-                </div>
-            `;
-        }
-
-        document.getElementById('btnConfirm').onclick = function() {
             const orderNumber = orders.length + 1;
-
             const newOrder = {
                 id: orderNumber,
-                ...currentOrder,
+                customerName: currentOrder.customerName,
+                customerPhone: currentOrder.customerPhone,
+                customerAddress: currentOrder.customerAddress,
+                mood: currentOrder.mood,
                 date: new Date().toISOString()
             };
 
@@ -1346,23 +632,7 @@
                 customerName: '',
                 customerPhone: '',
                 customerAddress: '',
-                mood: null,
-                subcategory: null,
-                post: null,
-                railing: null,
-                rosette: null,
-                rosetteStyle: null,
-                brackets: null,
-                bracketsStyle: null,
-                steps: null,
-                firstStep: null,
-                stepEdges: null,
-                stepRisers: null,
-                wood: null,
-                spindleType: null,
-                spindleStyle: null,
-                shoe: null,
-                shoeStyle: null
+                mood: null
             };
 
             document.getElementById('customerName').value = '';
@@ -1372,82 +642,7 @@
             goToScreen('welcomeScreen');
         };
 
-        // Admin
-        function loadOrders() {
-            const ordersList = document.getElementById('ordersList');
-
-            if (orders.length === 0) {
-                ordersList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📋</div>
-                        <h2>Nenhum pedido ainda</h2>
-                        <p>Os pedidos aparecerão aqui quando forem criados</p>
-                    </div>
-                `;
-                return;
-            }
-
-            ordersList.innerHTML = [...orders].reverse().map(order => {
-                const date = new Date(order.date);
-                return `
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-id">Pedido #${String(order.id).padStart(4, '0')}</div>
-                            <div class="order-date">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
-                        </div>
-                        <div class="order-details">
-                            <div class="detail-item">
-                                <div class="detail-label">Cliente</div>
-                                <div class="detail-value">${order.customerName}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Telefone</div>
-                                <div class="detail-value">${order.customerPhone}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Endereço</div>
-                                <div class="detail-value">${order.customerAddress}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Mood</div>
-                                <div class="detail-value">${order.mood.name}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Subcategoria</div>
-                                <div class="detail-value">${order.subcategory.name}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Poste</div>
-                                <div class="detail-value">${order.post.name}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Corrimão</div>
-                                <div class="detail-value">${order.railing.name}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Madeira</div>
-                                <div class="detail-value">${order.wood.name}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Spindles</div>
-                                <div class="detail-value">${order.spindleStyle.name}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Rosette</div>
-                                <div class="detail-value">${order.rosette ? 'Sim' : 'Não'}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-
-        createProgressBar();
-        console.log('✅ BuildPicker COMPLETO carregado com sucesso!');
+        console.log('✅ BuildPicker carregado com sucesso!');
     </script>
 </body>
 </html>
