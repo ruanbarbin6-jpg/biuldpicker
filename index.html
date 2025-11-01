@@ -1,1531 +1,1466 @@
-## 📝 Aplicativo BuildPicker - Configurador de Corrimãos (Código Completo)
-
-Aqui está o arquivo HTML completo, com todas as características solicitadas, incluindo o painel de administração básico e a persistência de pedidos via LocalStorage. Ele está pronto para ser colocado no Netlify.
-
----
-
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BuildPicker - Configure seu Corrimão</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>BuildPicker - Configure seu Projeto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Variáveis de Cores e Tipografia */
-        :root {
-            --red-tijolo: #dc2626;
-            --laranja-acao: #f59e0b;
-            --cinza-carvao: #475569;
-            --bg-escuro: #0f172a; /* Body background */
-            --bg-card: #1e293b;   /* Card background */
-            --text-light: #f8fafc; /* Lighter text for dark backgrounds */
-            --text-dark: #cbd5e1;  /* Darker text for details */
-            --border-color: #334155; /* Border for cards */
-            --success-color: #22c55e; /* Green for success */
-            --error-color: var(--red-tijolo); /* Red for errors */
-            --warning-color: var(--laranja-acao); /* Orange for warnings */
-        }
-
-        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --vermelho-tijolo: #dc2626;
+            --laranja-acao: #f59e0b;
+            --cinza-carvao: #475569;
+            --bg-escuro: #0f172a;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --texto-principal: #f1f5f9;
+            --texto-secundario: #94a3b8;
+            --success: #10b981;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-escuro);
-            color: var(--text-light);
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
+            background: var(--bg-escuro);
+            color: var(--texto-principal);
             min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Header */
-        header {
-            background-color: var(--bg-card);
-            padding: 20px 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-container {
-            max-width: 1200px;
+        .container {
+            max-width: 900px;
             margin: 0 auto;
-            padding: 0 20px;
+        }
+
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            gap: 15px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--bg-card);
         }
 
         .logo {
             font-size: 28px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-light);
+            font-weight: 800;
+            color: var(--texto-principal);
         }
 
-        .logo-icon {
+        .logo span {
+            color: var(--vermelho-tijolo);
+        }
+
+        .admin-icon {
             width: 40px;
             height: 40px;
-            background: var(--laranja-acao);
-            border-radius: 50%;
+            background: var(--bg-card);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            color: var(--bg-escuro);
-            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.6;
         }
 
-        .phase-indicator {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .admin-icon:hover {
+            opacity: 1;
+            background: var(--vermelho-tijolo);
+            transform: scale(1.05);
         }
 
-        .phase-badge {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .phase-badge.active {
-            background: var(--red-tijolo);
-            color: var(--text-light);
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            flex-grow: 1; /* Allow content to grow */
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            margin-bottom: 40px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--bg-card);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--red-tijolo), var(--laranja-acao));
-            transition: width 0.3s ease;
-        }
-
-        .progress-steps {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--cinza-carvao);
-        }
-
-        .step.active {
-            color: var(--laranja-acao);
-        }
-
-        .step-number {
-            width: 24px;
-            height: 24px;
-            background: var(--bg-card);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            color: var(--text-dark);
-        }
-
-        .step.active .step-number {
-            background: var(--laranja-acao);
-            color: var(--bg-escuro);
-        }
-
-        .step.completed .step-number {
-            background: var(--success-color);
-            color: var(--text-light);
-        }
-
-        /* Phases */
-        .phase {
+        .screen {
             display: none;
-            animation: fadeIn 0.3s ease-out;
+            animation: fadeIn 0.4s ease;
         }
 
-        .phase.active {
+        .screen.active {
             display: block;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .phase-title {
-            font-size: 28px;
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 32px;
             font-weight: 700;
-            color: var(--red-tijolo);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            color: var(--texto-principal);
         }
 
-        .phase-description {
-            color: var(--cinza-carvao);
+        .subtitle {
+            color: var(--texto-secundario);
             margin-bottom: 30px;
-            font-size: 14px;
+            font-size: 16px;
         }
 
-        /* Product Grid */
-        .products-grid {
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: var(--bg-hover);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            min-width: 30px;
+        }
+
+        .progress-step.active {
+            background: var(--vermelho-tijolo);
+        }
+
+        .progress-step.completed {
+            background: var(--success);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--texto-principal);
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-escuro);
+            border: 2px solid var(--bg-hover);
+            border-radius: 8px;
+            color: var(--texto-principal);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--vermelho-tijolo);
+        }
+
+        .options-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
-        .product-card {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
+        .option-card {
+            background: var(--bg-escuro);
+            border: 2px solid var(--bg-hover);
             border-radius: 12px;
             padding: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
-            position: relative;
         }
 
-        .product-card:hover {
-            border-color: var(--laranja-acao);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            transform: translateY(-5px);
+        .option-card:hover {
+            border-color: var(--vermelho-tijolo);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(220, 38, 38, 0.2);
         }
 
-        .product-card.selected {
-            border-color: var(--red-tijolo);
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(245, 158, 11, 0.1));
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+        .option-card.selected {
+            border-color: var(--vermelho-tijolo);
+            background: rgba(220, 38, 38, 0.1);
         }
 
-        .product-image {
+        .option-image {
             width: 100%;
-            height: 150px;
-            background: var(--bg-escuro);
+            height: 120px;
+            background: var(--bg-hover);
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            font-size: 40px;
-            color: var(--cinza-carvao);
-        }
-
-        .product-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 8px;
-        }
-
-        .product-description {
-            font-size: 12px;
-            color: var(--text-dark);
             margin-bottom: 12px;
-        }
-
-        .product-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--laranja-acao);
-        }
-
-        .product-card.selected::after {
-            content: '✓';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            background: var(--success-color);
-            color: var(--text-light);
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
+            font-size: 48px;
         }
 
-        /* Form */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
+        .option-name {
             font-weight: 600;
-            color: var(--text-light);
+            color: var(--texto-principal);
+            margin-bottom: 4px;
         }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
+        .option-code {
             font-size: 14px;
-            background-color: var(--bg-escuro);
-            color: var(--text-light);
-            transition: border-color 0.3s ease;
+            color: var(--texto-secundario);
         }
 
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: var(--cinza-carvao);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--red-tijolo);
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
-        }
-
-        /* Summary */
-        .summary-container {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
+        .yes-no-container {
+            display: flex;
+            gap: 20px;
             margin-bottom: 30px;
-        }
-
-        .summary-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--red-tijolo);
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
-        }
-
-        .summary-item:last-child {
-            border-bottom: none;
-        }
-
-        .summary-item-label {
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .summary-item-value {
-            color: var(--laranja-acao);
-            font-weight: 700;
-            text-align: right;
-        }
-
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 0;
-            border-top: 2px solid var(--red-tijolo);
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--red-tijolo);
-            margin-top: 20px;
-        }
-
-        .summary-total-value {
-            color: var(--laranja-acao);
-            font-size: 24px;
-        }
-
-        /* Buttons */
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
             justify-content: center;
         }
 
-        button {
-            padding: 14px 30px;
+        .yes-no-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 40px 20px;
+            background: var(--bg-escuro);
+            border: 3px solid var(--bg-hover);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--texto-principal);
+        }
+
+        .yes-no-btn:hover {
+            border-color: var(--vermelho-tijolo);
+            transform: translateY(-2px);
+        }
+
+        .yes-no-btn.selected {
+            border-color: var(--vermelho-tijolo);
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .btn {
+            padding: 16px 32px;
             border: none;
             border-radius: 8px;
+            font-family: 'Inter', sans-serif;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: 1;
-            min-width: 150px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: var(--red-tijolo);
-            color: var(--text-light);
+            background: var(--vermelho-tijolo);
+            color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
+            background: #b91c1c;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+            box-shadow: 0 8px 16px rgba(220, 38, 38, 0.3);
         }
 
         .btn-primary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
         .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text-light);
-            border: 2px solid var(--border-color);
+            background: var(--bg-hover);
+            color: var(--texto-principal);
         }
 
         .btn-secondary:hover {
-            border-color: var(--laranja-acao);
-            color: var(--laranja-acao);
+            background: var(--cinza-carvao);
         }
 
         .btn-success {
-            background: var(--success-color);
-            color: var(--text-light);
+            background: var(--success);
+            color: white;
         }
 
         .btn-success:hover {
-            background: #1c9e4a;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+            background: #059669;
         }
 
-        .btn-admin {
-            background: var(--cinza-carvao);
-            color: var(--text-light);
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: auto;
-            min-width: unset;
-            padding: 10px 20px;
-            z-index: 101;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-        .btn-admin:hover {
-            background: #334155;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
+        .buttons-row {
             display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 30px;
         }
 
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            animation: slideUp 0.3s ease-out;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-color);
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-            color: var(--success-color);
-        }
-
-        .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--red-tijolo);
-            margin-bottom: 15px;
-        }
-
-        .modal-text {
-            color: var(--text-dark);
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .modal-order-id {
+        .review-item {
             background: var(--bg-escuro);
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            font-family: 'Inter', monospace;
-            font-weight: 600;
-            color: var(--laranja-acao);
+            margin-bottom: 16px;
+            border-left: 4px solid var(--vermelho-tijolo);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px 15px;
-            }
-
-            .products-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 15px;
-            }
-
-            .phase-title {
-                font-size: 22px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            button {
-                min-width: 100%;
-            }
-
-            .header-container {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-
-            .progress-steps {
-                font-size: 11px;
-            }
-
-            .step-number {
-                width: 20px;
-                height: 20px;
-                font-size: 10px;
-            }
-            
-            .btn-admin {
-                width: calc(100% - 40px);
-                bottom: 10px;
-                right: 10px;
-            }
+        .review-label {
+            font-size: 14px;
+            color: var(--texto-secundario);
+            margin-bottom: 4px;
         }
 
-        /* Alerts */
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-            font-weight: 600;
-            border-left: 5px solid;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .alert.active {
-            display: block;
-        }
-
-        .alert-error {
-            background: rgba(var(--red-tijolo-rgb), 0.1); /* Using rgba for transparency */
-            color: var(--error-color);
-            border-color: var(--error-color);
-        }
-        .alert-success {
-            background: rgba(var(--success-color-rgb), 0.1);
-            color: var(--success-color);
-            border-color: var(--success-color);
-        }
-        /* Define RGBA values for use in alert backgrounds */
-        :root {
-            --red-tijolo-rgb: 220, 38, 38;
-            --success-color-rgb: 34, 197, 94;
-        }
-
-
-        /* 2D Preview */
-        .preview-container {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .preview-title {
+        .review-value {
             font-size: 16px;
             font-weight: 600;
-            color: var(--text-light);
+            color: var(--texto-principal);
+        }
+
+        .confirmation-box {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .order-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--vermelho-tijolo);
+            margin: 20px 0;
+        }
+
+        .success-icon {
+            font-size: 64px;
             margin-bottom: 20px;
         }
 
-        .preview-box {
-            width: 100%;
-            min-height: 200px;
-            background: var(--bg-escuro);
-            border-radius: 8px;
+        /* Admin Styles */
+        .admin-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: var(--cinza-carvao);
-            margin-bottom: 15px;
-            padding: 20px;
-            flex-direction: column;
-            gap: 10px;
+            margin-bottom: 30px;
         }
 
-        .preview-details {
-            text-align: left;
-            font-size: 13px;
-            color: var(--text-dark);
-            line-height: 1.8;
+        .order-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--vermelho-tijolo);
         }
 
-        .preview-details strong {
-            color: var(--laranja-acao);
-        }
-
-        /* Admin Panel Styles */
-        #adminPanel.modal-content {
-            max-width: 700px;
-            text-align: left;
-            padding: 30px;
-        }
-
-        #adminPanel h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        #adminPanel input[type="password"] {
-            margin-bottom: 15px;
-            width: 100%;
-        }
-
-        #adminPanel #adminLoginSection {
-            text-align: center;
-        }
-
-        #adminPanel #adminOrdersSection {
-            display: none;
-        }
-
-        #adminPanel #adminOrdersSection.active {
-            display: block;
-        }
-
-        #adminPanel .order-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        #adminPanel .order-item {
-            background: var(--bg-escuro);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: var(--text-dark);
-        }
-
-        #adminPanel .order-item strong {
-            color: var(--laranja-acao);
-        }
-
-        #adminPanel .order-item p {
-            margin: 5px 0;
-        }
-
-        #adminPanel .order-actions {
+        .order-header {
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
 
-        #adminPanel .order-actions .btn-primary,
-        #adminPanel .order-actions .btn-secondary {
-            flex: unset;
-            min-width: unset;
-            padding: 8px 15px;
+        .order-id {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--vermelho-tijolo);
+        }
+
+        .order-date {
+            color: var(--texto-secundario);
             font-size: 14px;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .detail-item {
+            background: var(--bg-escuro);
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--texto-secundario);
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--texto-principal);
+            word-break: break-word;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--texto-secundario);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-details {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons-row {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .yes-no-container {
+                flex-direction: column;
+            }
+
+            .yes-no-btn {
+                max-width: none;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <div class="logo-icon">BP</div>
-                <span>BuildPicker</span>
-            </div>
-            <div class="phase-indicator">
-                <span class="phase-badge active" id="phaseBadge">Fase 1 de 7</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- CONTAINER PRINCIPAL -->
     <div class="container">
-        <!-- PROGRESS BAR -->
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
+        <header>
+            <div class="logo">Build<span>Picker</span></div>
+            <div class="admin-icon" onclick="toggleAdmin()" title="Admin Panel">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
             </div>
-            <div class="progress-steps">
-                <div class="step active" data-step="1">
-                    <div class="step-number">1</div>
-                    <span>Design</span>
+        </header>
+
+        <!-- Customer Screen -->
+        <div id="customerScreen">
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="screen active">
+                <div class="card">
+                    <h1>Bem-vindo ao BuildPicker</h1>
+                    <p class="subtitle">Configure seu projeto de corrimão em 10 passos simples</p>
+                    
+                    <div class="form-group">
+                        <label>Nome do Cliente</label>
+                        <input type="text" id="customerName" placeholder="Digite o nome completo">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="tel" id="customerPhone" placeholder="(00) 00000-0000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <input type="text" id="customerAddress" placeholder="Rua, número, cidade">
+                    </div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-primary" onclick="startConfiguration()">
+                            Começar Configuração →
+                        </button>
+                    </div>
                 </div>
-                <div class="step" data-step="2">
-                    <div class="step-number">2</div>
-                    <span>Poste</span>
+            </div>
+
+            <!-- Step 1: Mood Selection -->
+            <div id="step1Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 1 de 10: Escolha o Mood</h1>
+                    <p class="subtitle">Qual estilo conversa mais com você?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="options-grid" id="moodOptions"></div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('welcomeScreen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(1)" id="btn1">Próximo →</button>
+                    </div>
                 </div>
-                <div class="step" data-step="3">
-                    <div class="step-number">3</div>
-                    <span>Corrimão</span>
+            </div>
+
+            <!-- Step 1b: Subcategory Selection -->
+            <div id="step1bScreen" class="screen">
+                <div class="card">
+                    <h1>Etapa 1b: Escolha a Subcategoria</h1>
+                    <p class="subtitle">Qual desses estilos combina mais com seu projeto?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="options-grid" id="subcategoryOptions"></div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step1Screen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep('1b')" id="btn1b">Próximo →</button>
+                    </div>
                 </div>
-                <div class="step" data-step="4">
-                    <div class="step-number">4</div>
-                    <span>Madeira</span>
+            </div>
+
+            <!-- Step 2: Post Selection -->
+            <div id="step2Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 2 de 10: Escolha do Poste</h1>
+                    <p class="subtitle">Selecione o estilo de poste que prefere</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="options-grid" id="postOptions"></div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step1bScreen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(2)" id="btn2">Próximo →</button>
+                    </div>
                 </div>
-                <div class="step" data-step="5">
-                    <div class="step-number">5</div>
-                    <span>Spindle</span>
+            </div>
+
+            <!-- Step 3: Railing Selection -->
+            <div id="step3Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 3 de 10: Escolha do Corrimão</h1>
+                    <p class="subtitle">Qual estilo de corrimão você prefere?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="options-grid" id="railingOptions"></div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step2Screen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(3)" id="btn3">Próximo →</button>
+                    </div>
                 </div>
-                <div class="step" data-step="6">
-                    <div class="step-number">6</div>
-                    <span>Dados</span>
+            </div>
+
+            <!-- Step 4: Rosette Question -->
+            <div id="step4Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 4 de 10: Rosette</h1>
+                    <p class="subtitle">Você gostaria de adicionar rosette?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="yes-no-container">
+                        <button class="yes-no-btn" onclick="selectYesNo('rosette', true)">SIM</button>
+                        <button class="yes-no-btn" onclick="selectYesNo('rosette', false)">NÃO</button>
+                    </div>
+
+                    <div class="options-grid" id="rosetteOptions" style="display: none;"></div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step3Screen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(4)" id="btn4" disabled>Próximo →</button>
+                    </div>
                 </div>
-                <div class="step" data-step="7">
-                    <div class="step-number">7</div>
-                    <span>Revisão</span>
+            </div>
+
+            <!-- Step 5: Brackets Question -->
+            <div id="step5Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 5 de 10: Brackets</h1>
+                    <p class="subtitle">Você gostaria de adicionar brackets?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="yes-no-container">
+                        <button class="yes-no-btn" onclick="selectYesNo('brackets', true)">SIM</button>
+                        <button class="yes-no-btn" onclick="selectYesNo('brackets', false)">NÃO</button>
+                    </div>
+
+                    <div class="options-grid" id="bracketsOptions" style="display: none;">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Escolha o Estilo e Cor do Bracket</label>
+                            <select id="bracketsSelect" onchange="document.getElementById('btn5').disabled = false;" style="width: 100%; padding: 10px; background: var(--bg-escuro); border: 2px solid var(--bg-hover); color: var(--texto-principal); border-radius: 8px;">
+                                <option value="">-- Selecione --</option>
+                                <option value="Decorativo Ouro">Decorativo Ouro</option>
+                                <option value="Moderno Preto">Moderno Preto</option>
+                                <option value="Clássico Bronze">Clássico Bronze</option>
+                                <option value="Minimalista Prata">Minimalista Prata</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step4Screen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(5)" id="btn5" disabled>Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: Steps Question -->
+            <div id="step6Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 6 de 10: Steps (Degraus)</h1>
+                    <p class="subtitle">Você vai mexer nos steps da escada?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="yes-no-container">
+                        <button class="yes-no-btn" onclick="selectYesNo('steps', true)">SIM</button>
+                        <button class="yes-no-btn" onclick="selectYesNo('steps', false)">NÃO</button>
+                    </div>
+
+                    <div id="stepsOptionsContainer" style="display: none;">
+                        <div class="form-group">
+                            <label>Tem first step (degrau diferente no início)?</label>
+                            <div class="yes-no-container">
+                                <button class="yes-no-btn" onclick="selectYesNo('firstStep', true)" style="max-width: 150px;">SIM</button>
+                                <button class="yes-no-btn" onclick="selectYesNo('firstStep', false)" style="max-width: 150px;">NÃO</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Você gostaria das bordas dos degraus redondas ou quadradas?</label>
+                            <div class="options-grid" id="stepEdgesOptions">
+                                <div class="option-card" onclick="selectStepOption('edges', 'redondo')">
+                                    <div class="option-name">Redondas</div>
+                                </div>
+                                <div class="option-card" onclick="selectStepOption('edges', 'quadrado')">
+                                    <div class="option-name">Quadradas</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Estilo dos risers (parte embaixo do degrau)</label>
+                            <div class="options-grid" id="stepRisersOptions">
+                                <div class="option-card" onclick="selectStepOption('risers', 'tinta-branca')">
+                                    <div class="option-name">Tinta Branca</div>
+                                </div>
+                                <div class="option-card" onclick="selectStepOption('risers', 'madeira')">
+                                    <div class="option-name">Madeira</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step5Screen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(6)" id="btn6" disabled>Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: Wood Selection -->
+            <div id="step7Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 7 de 10: Escolha da Madeira</h1>
+                    <p class="subtitle">Qual tipo de madeira você prefere?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="options-grid" id="woodOptions"></div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step6Screen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(7)" id="btn7">Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 8: Spindle Selection -->
+            <div id="step8Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 8 de 10: Escolha do Spindle</h1>
+                    <p class="subtitle">Você prefere spindles de madeira ou ferro?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="options-grid" id="spindleTypeOptions"></div>
+
+                    <div class="options-grid" id="spindleStyleOptions" style="display: none;"></div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step7Screen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(8)" id="btn8" disabled>Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 9: Shoe Question -->
+            <div id="step9Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 9 de 10: Shoe</h1>
+                    <p class="subtitle">Você gostaria de adicionar shoe?</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="yes-no-container">
+                        <button class="yes-no-btn" onclick="selectYesNo('shoe', true)">SIM</button>
+                        <button class="yes-no-btn" onclick="selectYesNo('shoe', false)">NÃO</button>
+                    </div>
+
+                    <div class="options-grid" id="shoeOptions" style="display: none;">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Qual formato você prefere?</label>
+                            <select id="shoeSelect" onchange="document.getElementById('btn9').disabled = false;" style="width: 100%; padding: 10px; background: var(--bg-escuro); border: 2px solid var(--bg-hover); color: var(--texto-principal); border-radius: 8px;">
+                                <option value="">-- Selecione --</option>
+                                <option value="Redondo">Redondo</option>
+                                <option value="Quadrado">Quadrado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step8Screen')">← Voltar</button>
+                        <button class="btn btn-primary" onclick="nextStep(9)" id="btn9" disabled>Próximo →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 10: Review -->
+            <div id="step10Screen" class="screen">
+                <div class="card">
+                    <h1>Etapa 10 de 10: Revisão do Pedido</h1>
+                    <p class="subtitle">Confira todos os detalhes antes de confirmar</p>
+                    
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div id="reviewContent"></div>
+
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" onclick="goToScreen('step9Screen')">← Editar</button>
+                        <button class="btn btn-success" onclick="confirmOrder()">✓ Confirmar Pedido</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmation Screen -->
+            <div id="confirmationScreen" class="screen">
+                <div class="card">
+                    <div class="confirmation-box">
+                        <div class="success-icon">✓</div>
+                        <h1>Pedido Confirmado!</h1>
+                        <div class="order-number" id="orderNumberDisplay">#0000</div>
+                        <p class="subtitle">Seu pedido foi registrado com sucesso. Nossa equipe entrará em contato em breve!</p>
+                        
+                        <div class="buttons-row" style="justify-content: center; margin-top: 40px;">
+                            <button class="btn btn-primary" onclick="resetForm()">Novo Pedido</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ALERTA -->
-        <div class="alert alert-error" id="alertError"></div>
-        <div class="alert alert-success" id="alertSuccess"></div>
-
-        <!-- FASE 1: DESIGN -->
-        <div class="phase active" data-phase="1">
-            <h2 class="phase-title">🎨 Escolha o Estilo de Design</h2>
-            <p class="phase-description">Selecione o estilo que melhor se adequa ao seu projeto</p>
-            <div class="products-grid" id="designsGrid"></div>
-            <div class="button-group">
-                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase1">Próximo</button>
-            </div>
-        </div>
-
-        <!-- FASE 2: POSTE -->
-        <div class="phase" data-phase="2">
-            <h2 class="phase-title">🏗️ Escolha o Poste</h2>
-            <p class="phase-description">Selecione o poste compatível com seu design</p>
-            <div class="products-grid" id="postsGrid"></div>
-            <div class="button-group">
-                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
-                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase2">Próximo</button>
-            </div>
-        </div>
-
-        <!-- FASE 3: CORRIMÃO -->
-        <div class="phase" data-phase="3">
-            <h2 class="phase-title">🛤️ Escolha o Corrimão</h2>
-            <p class="phase-description">Selecione o corrimão que combina com seu projeto</p>
-            <div class="products-grid" id="railingsGrid"></div>
-            <div class="button-group">
-                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
-                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase3">Próximo</button>
-            </div>
-        </div>
-
-        <!-- FASE 4: MADEIRA -->
-        <div class="phase" data-phase="4">
-            <h2 class="phase-title">🌳 Escolha o Tipo de Madeira</h2>
-            <p class="phase-description">Selecione o tipo de madeira para seu corrimão</p>
-            <div class="products-grid" id="woodsGrid"></div>
-            <div class="button-group">
-                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
-                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase4">Próximo</button>
-            </div>
-        </div>
-
-        <!-- FASE 5: SPINDLE -->
-        <div class="phase" data-phase="5">
-            <h2 class="phase-title">✨ Escolha o Spindle</h2>
-            <p class="phase-description">Selecione o tipo de spindle para complementar seu projeto</p>
-            <div class="products-grid" id="spindlesGrid"></div>
-            <div class="button-group">
-                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
-                <button class="btn-primary" onclick="nextPhase()" disabled id="btnPhase5">Próximo</button>
-            </div>
-        </div>
-
-        <!-- FASE 6: DADOS DO CLIENTE -->
-        <div class="phase" data-phase="6">
-            <h2 class="phase-title">📋 Seus Dados</h2>
-            <p class="phase-description">Preencha suas informações para finalizarmos seu pedido</p>
-            <div class="form-group">
-                <label for="clientName">Nome Completo *</label>
-                <input type="text" id="clientName" placeholder="Digite seu nome completo" required>
-            </div>
-            <div class="form-group">
-                <label for="clientPhone">Telefone *</label>
-                <input type="tel" id="clientPhone" placeholder="(XX) XXXXX-XXXX" required>
-            </div>
-            <div class="form-group">
-                <label for="clientLocation">Localização / Endereço *</label>
-                <input type="text" id="clientLocation" placeholder="Cidade, Estado ou Endereço completo" required>
-            </div>
-            <div class="button-group">
-                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
-                <button class="btn-primary" onclick="nextPhase()" id="btnPhase6">Próximo</button>
-            </div>
-        </div>
-
-        <!-- FASE 7: REVISÃO -->
-        <div class="phase" data-phase="7">
-            <h2 class="phase-title">✅ Revisão do Pedido</h2>
-            <p class="phase-description">Verifique todas as suas escolhas antes de enviar</p>
-
-            <!-- PREVIEW -->
-            <div class="preview-container">
-                <div class="preview-title">Visualização do Seu Projeto (2D)</div>
-                <div class="preview-box">
-                    <div id="previewContent">Seu projeto aparecerá aqui!</div>
+        <!-- Admin Screen -->
+        <div id="adminScreen" style="display: none;">
+            <div class="card">
+                <div class="admin-header">
+                    <h1>Painel de Pedidos</h1>
+                    <button class="btn btn-secondary" onclick="toggleAdmin()">← Voltar</button>
                 </div>
-                <div class="preview-details" id="previewDetails"></div>
-            </div>
-
-            <!-- RESUMO -->
-            <div class="summary-container">
-                <div class="summary-title">Resumo da Configuração</div>
-                <div class="summary-item">
-                    <span class="summary-item-label">Design:</span>
-                    <span class="summary-item-value" id="summaryDesign">-</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-item-label">Poste:</span>
-                    <span class="summary-item-value" id="summaryPost">-</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-item-label">Corrimão:</span>
-                    <span class="summary-item-value" id="summaryRailing">-</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-item-label">Madeira:</span>
-                    <span class="summary-item-value" id="summaryWood">-</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-item-label">Spindle:</span>
-                    <span class="summary-item-value" id="summarySpindle">-</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-item-label">Cliente:</span>
-                    <span class="summary-item-value" id="summaryClient">-</span>
-                </div>
-                <div class="summary-total">
-                    <span>Valor Total Estimado:</span>
-                    <span class="summary-total-value" id="summaryTotal">R$ 0,00</span>
-                </div>
-            </div>
-
-            <div class="button-group">
-                <button class="btn-secondary" onclick="prevPhase()">Voltar</button>
-                <button class="btn-success" onclick="submitOrder()">✓ Enviar Pedido</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE SUCESSO -->
-    <div class="modal" id="successModal">
-        <div class="modal-content">
-            <div class="modal-icon">✅</div>
-            <div class="modal-title">Pedido Enviado com Sucesso!</div>
-            <div class="modal-text">
-                Seu pedido foi recebido com sucesso. Nossa equipe entrará em contato em breve para confirmar os detalhes.
-            </div>
-            <div class="modal-order-id">
-                ID do Pedido: <span id="modalOrderId">-</span>
-            </div>
-            <button class="btn-primary" onclick="resetForm()">Fazer Novo Pedido</button>
-        </div>
-    </div>
-
-    <!-- BOTÃO ADMIN -->
-    <button class="btn-admin" onclick="showAdminPanel()">Painel Admin</button>
-
-    <!-- MODAL PAINEL ADMIN -->
-    <div class="modal" id="adminModal">
-        <div class="modal-content" id="adminPanel">
-            <h2 class="modal-title">Painel de Administração</h2>
-
-            <div id="adminLoginSection">
-                <p class="modal-text">Digite a senha para acessar os pedidos.</p>
-                <div class="form-group">
-                    <label for="adminPassword">Senha:</label>
-                    <input type="password" id="adminPassword" placeholder="********">
-                </div>
-                <button class="btn-primary" onclick="loginAdmin()">Entrar</button>
-                <button class="btn-secondary" onclick="closeAdminPanel()">Fechar</button>
-            </div>
-
-            <div id="adminOrdersSection">
-                <p class="modal-text">Pedidos Recebidos:</p>
-                <ul class="order-list" id="orderList">
-                    <!-- Pedidos serão renderizados aqui -->
-                    <p class="modal-text">Nenhum pedido ainda.</p>
-                </ul>
-                <div class="button-group">
-                    <button class="btn-secondary" onclick="logoutAdmin()">Sair</button>
-                    <button class="btn-primary" onclick="clearAllOrders()">Limpar Todos os Pedidos</button>
-                </div>
+                
+                <div id="ordersList"></div>
             </div>
         </div>
     </div>
 
     <script>
         // ============================================
-        // DADOS DO APLICATIVO
+        // DATABASE CONFIGURATION
         // ============================================
-        const ADMIN_PASSWORD = "admin"; // Senha para o painel de administração
 
-        const appData = {
-            designs: [
-                {
-                    id: 'design-1',
-                    name: 'Moderno',
-                    value: 'moderno',
-                    description: 'Linhas limpas, minimalismo e funcionalidade',
-                    price: 0,
-                    emoji: '🏢'
-                },
-                {
-                    id: 'design-2',
-                    name: 'Contemporâneo',
-                    value: 'contemporaneo',
-                    description: 'Tendências atuais, mistura de materiais',
-                    price: 0,
-                    emoji: '🎨'
-                },
-                {
-                    id: 'design-3',
-                    name: 'Farmhouse',
-                    value: 'farmhouse',
-                    description: 'Charme rústico e acolhedor',
-                    price: 0,
-                    emoji: '🏡'
-                },
-                {
-                    id: 'design-4',
-                    name: 'Clássico',
-                    value: 'classico',
-                    description: 'Elegância atemporal e detalhes ornamentados',
-                    price: 0,
-                    emoji: '👑'
-                }
+        const config = {
+            moods: [
+                { name: 'Clássico e Elegante', value: 'classico', icon: '👑', subcategories: ['colonial', 'bankerhill', 'georgia'] },
+                { name: 'Moderno e Minimalista', value: 'moderno', icon: '🏢', subcategories: ['contemporaneo', 'hampton', 'ohio'] },
+                { name: 'Rústico e Aconchegante', value: 'rustico', icon: '🏡', subcategories: ['farmhouse', 'boxnewels', 'utah'] }
             ],
-            posts: [
-                {
-                    id: 'post-1',
-                    name: 'Poste Slim',
-                    value: 'poste-slim',
-                    description: 'Design minimalista',
-                    price: 75,
-                    compatibleStyles: ['moderno', 'contemporaneo'],
-                    emoji: '📏'
-                },
-                {
-                    id: 'post-2',
-                    name: 'Poste Ornamentado',
-                    value: 'poste-ornamentado',
-                    description: 'Detalhes clássicos e esculpidos',
-                    price: 120,
-                    compatibleStyles: ['farmhouse', 'classico'],
-                    emoji: '🎭'
-                },
-                {
-                    id: 'post-3',
-                    name: 'Poste Quadrado',
-                    value: 'poste-quadrado',
-                    description: 'Formato robusto e versátil',
-                    price: 90,
-                    compatibleStyles: ['moderno', 'contemporaneo', 'farmhouse', 'classico'],
-                    emoji: '📦'
-                }
-            ],
-            railings: [
-                {
-                    id: 'railing-1',
-                    name: 'Corrimão Reto',
-                    value: 'corrimao-reto',
-                    description: 'Design simples e funcional',
-                    price: 50,
-                    compatibleStyles: ['moderno', 'contemporaneo'],
-                    emoji: '➖'
-                },
-                {
-                    id: 'railing-2',
-                    name: 'Corrimão Arredondado',
-                    value: 'corrimao-arredondado',
-                    description: 'Perfil suave e confortável',
-                    price: 65,
-                    compatibleStyles: ['moderno', 'contemporaneo', 'farmhouse'],
-                    emoji: '⭕'
-                },
-                {
-                    id: 'railing-3',
-                    name: 'Corrimão Esculpido',
-                    value: 'corrimao-esculpido',
-                    description: 'Detalhes decorativos elegantes',
-                    price: 80,
-                    compatibleStyles: ['farmhouse', 'classico'],
-                    emoji: '🎪'
-                }
+            subcategories: {
+                colonial: { name: 'Colonial', mood: 'classico', icon: '🏛️' },
+                bankerhill: { name: 'Banker Hill', mood: 'classico', icon: '🏰' },
+                georgia: { name: 'Georgia', mood: 'classico', icon: '⚜️' },
+                contemporaneo: { name: 'Contemporâneo', mood: 'moderno', icon: '🎨' },
+                hampton: { name: 'Hampton', mood: 'moderno', icon: '🌊' },
+                ohio: { name: 'Ohio', mood: 'moderno', icon: '⚡' },
+                farmhouse: { name: 'Farmhouse', mood: 'rustico', icon: '🌾' },
+                boxnewels: { name: 'Box Newels', mood: 'rustico', icon: '📦' },
+                utah: { name: 'Utah', mood: 'rustico', icon: '🏔️' }
+            },
+            posts: {
+                colonial: [
+                    { name: 'Poste Clássico Ornamentado', code: 'CLASSICAL-001', icon: '🏛️' },
+                    { name: 'Poste Tradicional', code: 'CLASSICAL-002', icon: '📐' }
+                ],
+                bankerhill: [
+                    { name: 'Poste Bankerhill', code: 'BANKER-001', icon: '🏰' },
+                    { name: 'Poste Elegante', code: 'BANKER-002', icon: '✨' }
+                ],
+                georgia: [
+                    { name: 'Poste Georgia', code: 'GEORGIA-001', icon: '🏛️' },
+                    { name: 'Poste Detalhado', code: 'GEORGIA-002', icon: '💎' }
+                ],
+                contemporaneo: [
+                    { name: 'Poste Contemporâneo', code: 'CONTEMP-001', icon: '▢' },
+                    { name: 'Poste Minimalista', code: 'CONTEMP-002', icon: '◾' }
+                ],
+                hampton: [
+                    { name: 'Poste Hampton', code: 'HAMPTON-001', icon: '🌊' },
+                    { name: 'Poste Costeiro', code: 'HAMPTON-002', icon: '⛵' }
+                ],
+                ohio: [
+                    { name: 'Poste Ohio', code: 'OHIO-001', icon: '⚡' },
+                    { name: 'Poste Moderno', code: 'OHIO-002', icon: '🔧' }
+                ],
+                farmhouse: [
+                    { name: 'Poste Fazenda', code: 'FARM-001', icon: '🌾' },
+                    { name: 'Poste Rústico', code: 'FARM-002', icon: '🪵' }
+                ],
+                boxnewels: [
+                    { name: 'Poste Box Newels', code: 'BOX-001', icon: '📦' },
+                    { name: 'Poste Estruturado', code: 'BOX-002', icon: '🔲' }
+                ],
+                utah: [
+                    { name: 'Poste Utah', code: 'UTAH-001', icon: '🏔️' },
+                    { name: 'Poste Montanha', code: 'UTAH-002', icon: '⛰️' }
+                ]
+            },
+            railings: {
+                colonial: [
+                    { name: 'Corrimão Colonial', code: 'RAIL-COLONIAL-01', icon: '━' },
+                    { name: 'Corrimão Clássico', code: 'RAIL-COLONIAL-02', icon: '═' }
+                ],
+                bankerhill: [
+                    { name: 'Corrimão Bankerhill', code: 'RAIL-BANKER-01', icon: '━' },
+                    { name: 'Corrimão Elegante', code: 'RAIL-BANKER-02', icon: '─' }
+                ],
+                georgia: [
+                    { name: 'Corrimão Georgia', code: 'RAIL-GEORGIA-01', icon: '═' },
+                    { name: 'Corrimão Ornamentado', code: 'RAIL-GEORGIA-02', icon: '▬' }
+                ],
+                contemporaneo: [
+                    { name: 'Corrimão Contemporâneo', code: 'RAIL-CONTEMP-01', icon: '─' },
+                    { name: 'Corrimão Linear', code: 'RAIL-CONTEMP-02', icon: '━' }
+                ],
+                hampton: [
+                    { name: 'Corrimão Hampton', code: 'RAIL-HAMPTON-01', icon: '═' },
+                    { name: 'Corrimão Costeiro', code: 'RAIL-HAMPTON-02', icon: '─' }
+                ],
+                ohio: [
+                    { name: 'Corrimão Ohio', code: 'RAIL-OHIO-01', icon: '━' },
+                    { name: 'Corrimão Moderno', code: 'RAIL-OHIO-02', icon: '▬' }
+                ],
+                farmhouse: [
+                    { name: 'Corrimão Fazenda', code: 'RAIL-FARM-01', icon: '═' },
+                    { name: 'Corrimão Rústico', code: 'RAIL-FARM-02', icon: '─' }
+                ],
+                boxnewels: [
+                    { name: 'Corrimão Box', code: 'RAIL-BOX-01', icon: '━' },
+                    { name: 'Corrimão Estruturado', code: 'RAIL-BOX-02', icon: '▬' }
+                ],
+                utah: [
+                    { name: 'Corrimão Utah', code: 'RAIL-UTAH-01', icon: '═' },
+                    { name: 'Corrimão Montanha', code: 'RAIL-UTAH-02', icon: '─' }
+                ]
+            },
+            rosettes: [
+                { name: 'Rosette Clássica', code: 'ROSE-001', icon: '⭕' },
+                { name: 'Rosette Ornamentada', code: 'ROSE-002', icon: '✿' },
+                { name: 'Rosette Moderna', code: 'ROSE-003', icon: '◯' }
             ],
             woods: [
-                {
-                    id: 'wood-1',
-                    name: 'Red Oak',
-                    value: 'redOak',
-                    description: 'Madeira clara com tons avermelhados',
-                    price: 150,
-                    emoji: '🟫'
-                },
-                {
-                    id: 'wood-2',
-                    name: 'White Oak',
-                    value: 'whiteOak',
-                    description: 'Madeira clara com tons acinzentados',
-                    price: 200,
-                    emoji: '⬜'
-                }
+                { name: 'Madeira Vermelha (Red Oak)', value: 'vermelho', icon: '🟤' },
+                { name: 'Madeira Branca (White Oak)', value: 'branca', icon: '⚪' }
             ],
-            spindles: [
-                {
-                    id: 'spindle-1',
-                    name: 'Spindle Metálico',
-                    value: 'spindle-metalico',
-                    description: 'Moderno e durável em metal',
-                    price: 30,
-                    compatibleStyles: ['moderno', 'contemporaneo'],
-                    emoji: '⚙️'
-                },
-                {
-                    id: 'spindle-2',
-                    name: 'Spindle Madeira Reto',
-                    value: 'spindle-madeira-reto',
-                    description: 'Clássico e elegante em madeira',
-                    price: 25,
-                    compatibleStyles: ['farmhouse', 'classico'],
-                    emoji: '📍'
-                },
-                {
-                    id: 'spindle-3',
-                    name: 'Spindle Madeira Torneado',
-                    value: 'spindle-madeira-torneado',
-                    description: 'Com detalhes torneados artesanais',
-                    price: 40,
-                    compatibleStyles: ['classico'],
-                    emoji: '🎯'
-                }
+            spindlesWood: [
+                { name: 'Spindle Madeira Torneado', code: 'SPIN-WOOD-001', icon: '🪵' },
+                { name: 'Spindle Madeira Reto', code: 'SPIN-WOOD-002', icon: '║' },
+                { name: 'Spindle Madeira Decorativo', code: 'SPIN-WOOD-003', icon: '🎯' }
+            ],
+            spindlesIron: [
+                { name: 'Spindle Ferro Clássico', code: 'SPIN-IRON-001', icon: '⚙️' },
+                { name: 'Spindle Ferro Moderno', code: 'SPIN-IRON-002', icon: '⚡' },
+                { name: 'Spindle Ferro Decorativo', code: 'SPIN-IRON-003', icon: '✨' }
             ]
         };
 
         // ============================================
-        // ESTADO DA APLICAÇÃO
+        // STATE MANAGEMENT
         // ============================================
 
-        let currentPhase = 1;
-        const maxPhases = 7;
-
-        const state = {
-            design: null,
+        let currentOrder = {
+            customerName: '',
+            customerPhone: '',
+            customerAddress: '',
+            mood: null,
+            subcategory: null,
             post: null,
             railing: null,
+            rosette: null,
+            rosetteStyle: null,
+            brackets: null,
+            bracketsStyle: null,
+            steps: null,
+            firstStep: null,
+            stepEdges: null,
+            stepRisers: null,
             wood: null,
-            spindle: null,
-            clientName: '',
-            clientPhone: '',
-            clientLocation: ''
+            spindleType: null,
+            spindleStyle: null,
+            shoe: null,
+            shoeStyle: null
         };
 
-        let orders = JSON.parse(localStorage.getItem('buildPickerOrders')) || [];
+        const totalSteps = 10;
 
         // ============================================
-        // FUNÇÕES DE UTILIDADE
+        // UTILITY FUNCTIONS
         // ============================================
 
-        function showElement(id) { document.getElementById(id).style.display = 'block'; }
-        function hideElement(id) { document.getElementById(id).style.display = 'none'; }
-        function addClass(id, className) { document.getElementById(id).classList.add(className); }
-        function removeClass(id, className) { document.getElementById(id).classList.remove(className); }
-
-        function showError(message) {
-            const alert = document.getElementById('alertError');
-            alert.textContent = message;
-            alert.classList.add('active');
-            alert.style.display = 'block';
-            setTimeout(() => {
-                alert.classList.remove('active');
-                alert.style.display = 'none';
-            }, 5000);
-        }
-
-        function showSuccess(message) {
-            const alert = document.getElementById('alertSuccess');
-            alert.textContent = message;
-            alert.classList.add('active');
-            alert.style.display = 'block';
-            setTimeout(() => {
-                alert.classList.remove('active');
-                alert.style.display = 'none';
-            }, 5000);
-        }
-
-        function generateOrderId() {
-            return `BP-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
-        }
-
-        // ============================================
-        // FUNÇÕES DE RENDERIZAÇÃO
-        // ============================================
-
-        function createProductCard(product, type) {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-
-            if (state[type] && state[type].id === product.id) {
-                card.classList.add('selected');
-            }
-
-            card.innerHTML = `
-                <div class="product-image">${product.emoji}</div>
-                <div class="product-name">${product.name}</div>
-                <div class="product-description">${product.description}</div>
-                <div class="product-price">R$ ${product.price.toFixed(2).replace('.', ',')}</div>
-            `;
-
-            card.addEventListener('click', () => selectProduct(product, type, card));
-
-            return card;
-        }
-
-        function renderProducts(gridId, productType, filterByStyle = false) {
-            const grid = document.getElementById(gridId);
-            grid.innerHTML = '';
-            
-            let productsToRender = appData[productType];
-
-            if (filterByStyle && state.design) {
-                productsToRender = productsToRender.filter((product) =>
-                    product.compatibleStyles.includes(state.design.value)
-                );
-            }
-
-            if (productsToRender.length === 0) {
-                grid.innerHTML = `<p class="phase-description">Nenhum ${productType} compatível com o design selecionado.</p>`;
-                const btn = document.getElementById(`btnPhase${currentPhase}`);
-                if (btn) btn.disabled = true;
-                return;
-            }
-
-            productsToRender.forEach((product) => {
-                const card = createProductCard(product, productType.slice(0, -1)); // 'designs' -> 'design'
-                grid.appendChild(card);
-            });
-
-            const btn = document.getElementById(`btnPhase${currentPhase}`);
-            if (btn) btn.disabled = !state[productType.slice(0, -1)]; // Check if an item is selected
-        }
-
-        // ============================================
-        // LÓGICA DE FASES
-        // ============================================
-
-        function initApp() {
-            renderProducts('designsGrid', 'designs');
-            updateProgress();
-        }
-
-        function selectProduct(product, type, cardElement) {
-            // Desmarca todos os cards do mesmo tipo
-            document.querySelectorAll(`[data-phase="${currentPhase}"] .product-card`).forEach((card) => {
-                card.classList.remove('selected');
-            });
-
-            // Marca o card selecionado
-            cardElement.classList.add('selected');
-            state[type] = product;
-
-            // Habilita o botão "Próximo" para a fase atual
-            const btnId = `btnPhase${currentPhase}`;
-            const btn = document.getElementById(btnId);
-            if (btn) {
-                btn.disabled = false;
-            }
-        }
-
-        function nextPhase() {
-            // Validações antes de avançar
-            if (currentPhase === 1 && !state.design) {
-                showError('Por favor, selecione um design.');
-                return;
-            }
-            if (currentPhase === 2 && !state.post) {
-                showError('Por favor, selecione um poste.');
-                return;
-            }
-            if (currentPhase === 3 && !state.railing) {
-                showError('Por favor, selecione um corrimão.');
-                return;
-            }
-            if (currentPhase === 4 && !state.wood) {
-                showError('Por favor, selecione um tipo de madeira.');
-                return;
-            }
-            if (currentPhase === 5 && !state.spindle) {
-                showError('Por favor, selecione um spindle.');
-                return;
-            }
-            if (currentPhase === 6) {
-                const name = document.getElementById('clientName').value.trim();
-                const phone = document.getElementById('clientPhone').value.trim();
-                const location = document.getElementById('clientLocation').value.trim();
-
-                if (!name || !phone || !location) {
-                    showError('Por favor, preencha todos os dados.');
-                    return;
-                }
-
-                state.clientName = name;
-                state.clientPhone = phone;
-                state.clientLocation = location;
-            }
-
-            if (currentPhase < maxPhases) {
-                currentPhase++;
-                updatePhaseDisplay();
-            }
-        }
-
-        function prevPhase() {
-            if (currentPhase > 1) {
-                currentPhase--;
-                updatePhaseDisplay();
-            }
-        }
-
-        function updatePhaseDisplay() {
-            // Oculta todas as fases
-            document.querySelectorAll('.phase').forEach((phase) => {
-                phase.classList.remove('active');
-            });
-
-            // Mostra fase atual
-            const activePhaseElement = document.querySelector(`[data-phase="${currentPhase}"]`);
-            if (activePhaseElement) {
-                activePhaseElement.classList.add('active');
-            }
-
-            // Renderiza conteúdo específico da fase
-            switch (currentPhase) {
-                case 1: renderProducts('designsGrid', 'designs'); break;
-                case 2: renderProducts('postsGrid', 'posts', true); break;
-                case 3: renderProducts('railingsGrid', 'railings', true); break;
-                case 4: renderProducts('woodsGrid', 'woods'); break;
-                case 5: renderProducts('spindlesGrid', 'spindles', true); break;
-                case 6: 
-                    // Populate client data if previously entered
-                    document.getElementById('clientName').value = state.clientName;
-                    document.getElementById('clientPhone').value = state.clientPhone;
-                    document.getElementById('clientLocation').value = state.clientLocation;
-                    break;
-                case 7: updateSummary(); break;
-            }
-
-            updateProgress();
-            window.scrollTo(0, 0); // Rola para o topo da página ao mudar de fase
-        }
-
-        function updateProgress() {
-            const progress = (currentPhase / maxPhases) * 100;
-            document.getElementById('progressFill').style.width = `${progress}%`;
-            document.getElementById('phaseBadge').textContent = `Fase ${currentPhase} de ${maxPhases}`;
-
-            // Atualiza status dos steps
-            document.querySelectorAll('.step').forEach((step, index) => {
-                const stepNum = index + 1;
-                step.classList.remove('active', 'completed');
-
-                if (stepNum === currentPhase) {
-                    step.classList.add('active');
-                } else if (stepNum < currentPhase) {
-                    step.classList.add('completed');
-                }
-            });
-        }
-
-        function calculateTotal() {
-            let total = 0;
-            if (state.design) total += state.design.price;
-            if (state.post) total += state.post.price;
-            if (state.railing) total += state.railing.price;
-            if (state.wood) total += state.wood.price;
-            if (state.spindle) total += state.spindle.price;
-            return total;
-        }
-
-        function updateSummary() {
-            // Preenche o resumo textual
-            document.getElementById('summaryDesign').textContent = state.design?.name || '-';
-            document.getElementById('summaryPost').textContent = state.post?.name || '-';
-            document.getElementById('summaryRailing').textContent = state.railing?.name || '-';
-            document.getElementById('summaryWood').textContent = state.wood?.name || '-';
-            document.getElementById('summarySpindle').textContent = state.spindle?.name || '-';
-            document.getElementById('summaryClient').textContent = state.clientName || '-';
-
-            const total = calculateTotal();
-            document.getElementById('summaryTotal').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-
-            // Atualiza a visualização 2D
-            updatePreview();
-        }
-
-        function updatePreview() {
-            const previewContent = document.getElementById('previewContent');
-            const previewDetails = document.getElementById('previewDetails');
-            
-            if (state.design && state.post && state.railing && state.wood && state.spindle) {
-                previewContent.innerHTML = `
-                    <p style="font-size: 2em;">${state.design.emoji} ${state.post.emoji} ${state.railing.emoji} ${state.wood.emoji} ${state.spindle.emoji}</p>
-                    <p>Seu Corrimão ${state.design.name} (${state.wood.name})</p>
-                `;
-            } else {
-                previewContent.innerHTML = '<p>Selecione todos os componentes para a visualização.</p>';
-            }
-
-            previewDetails.innerHTML = `
-                <strong>Configuração do Projeto:</strong><br>
-                Design: <strong>${state.design?.name || '-'}</strong><br>
-                Poste: <strong>${state.post?.name || '-'}</strong><br>
-                Corrimão: <strong>${state.railing?.name || '-'}</strong><br>
-                Madeira: <strong>${state.wood?.name || '-'}</strong><br>
-                Spindle: <strong>${state.spindle?.name || '-'}</strong><br>
-                <br>
-                <strong>Dados do Cliente:</strong><br>
-                Nome: <strong>${state.clientName || '-'}</strong><br>
-                Telefone: <strong>${state.clientPhone || '-'}</strong><br>
-                Localização: <strong>${state.clientLocation || '-'}</strong>
-            `;
-        }
-
-        // ============================================
-        // ENVIAR PEDIDO
-        // ============================================
-
-        function submitOrder() {
-            const orderId = generateOrderId();
-
-            const orderData = {
-                id: orderId,
-                design: { name: state.design?.name, value: state.design?.value, price: state.design?.price },
-                post: { name: state.post?.name, value: state.post?.value, price: state.post?.price },
-                railing: { name: state.railing?.name, value: state.railing?.value, price: state.railing?.price },
-                wood: { name: state.wood?.name, value: state.wood?.value, price: state.wood?.price },
-                spindle: { name: state.spindle?.name, value: state.spindle?.value, price: state.spindle?.price },
-                clientName: state.clientName,
-                clientPhone: state.clientPhone,
-                clientLocation: state.clientLocation,
-                totalPrice: calculateTotal(),
-                timestamp: new Date().toLocaleString()
+        function updateProgressBar() {
+            const currentScreen = document.querySelector('.screen.active').id;
+            const stepMap = {
+                'welcomeScreen': 0,
+                'step1Screen': 1,
+                'step1bScreen': 1,
+                'step2Screen': 2,
+                'step3Screen': 3,
+                'step4Screen': 4,
+                'step5Screen': 5,
+                'step6Screen': 6,
+                'step7Screen': 7,
+                'step8Screen': 8,
+                'step9Screen': 9,
+                'step10Screen': 10
             };
 
-            orders.push(orderData);
-            localStorage.setItem('buildPickerOrders', JSON.stringify(orders));
-            console.log('Pedido salvo:', orderData);
+            const progressBars = document.querySelectorAll('#progressBar');
 
-            document.getElementById('modalOrderId').textContent = orderId;
-            document.getElementById('successModal').classList.add('active');
+            progressBars.forEach(bar => {
+                bar.innerHTML = '';
+                for (let i = 1; i <= totalSteps; i++) {
+                    const step = document.createElement('div');
+                    step.className = 'progress-step';
+                    if (i < currentStep) step.classList.add('completed');
+                    if (i === currentStep) step.classList.add('active');
+                    bar.appendChild(step);
+                }
+            });
+        }
+
+        function goToScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            updateProgressBar();
+            window.scrollTo(0, 0);
+        }
+
+        function generateOptions(items, containerId, selectCallback) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            container.innerHTML = items.map((item, index) => `
+                <div class="option-card" onclick="${selectCallback}(${index})">
+                    <div class="option-image">${item.icon}</div>
+                    <div class="option-name">${item.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectMood(index) {
+            currentOrder.mood = config.moods[index];
+            document.querySelectorAll('#moodOptions .option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+            document.getElementById('btn1').disabled = false;
+        }
+
+        function selectSubcategory(index) {
+            const subcategoryKeys = currentOrder.mood.subcategories;
+            const subcategoryKey = subcategoryKeys[index];
+            currentOrder.subcategory = config.subcategories[subcategoryKey];
+            
+            document.querySelectorAll('#subcategoryOptions .option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+            document.getElementById('btn1b').disabled = false;
+        }
+
+        function selectPost(index) {
+            const posts = config.posts[currentOrder.subcategory.name.toLowerCase().replace(' ', '')];
+            currentOrder.post = posts[index];
+            
+            document.querySelectorAll('#postOptions .option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+            document.getElementById('btn2').disabled = false;
+        }
+
+        function selectRailing(index) {
+            const key = Object.keys(config.railings).find(k => 
+                config.railings[k] && config.railings[k].length > 0
+            );
+            const railings = config.railings[currentOrder.subcategory.name.toLowerCase().replace(' ', '').replace('á', 'a')];
+            currentOrder.railing = railings ? railings[index] : config.railings[Object.keys(config.railings)[0]][index];
+            
+            document.querySelectorAll('#railingOptions .option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+            document.getElementById('btn3').disabled = false;
+        }
+
+        function selectYesNo(key, value) {
+            currentOrder[key] = value;
+            
+            // Update button styling
+            event.target.parentElement.querySelectorAll('.yes-no-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+
+            // Handle conditional displays
+            if (key === 'rosette') {
+                const rosetteOptions = document.getElementById('rosetteOptions');
+                const btn4 = document.getElementById('btn4');
+                if (value) {
+                    rosetteOptions.style.display = 'grid';
+                    generateOptions(config.rosettes, 'rosetteOptions', 'selectRosetteStyle');
+                    btn4.disabled = true;
+                } else {
+                    rosetteOptions.style.display = 'none';
+                    btn4.disabled = false;
+                }
+            }
+
+            if (key === 'brackets') {
+                const bracketsOptions = document.getElementById('bracketsOptions');
+                const btn5 = document.getElementById('btn5');
+                if (value) {
+                    bracketsOptions.style.display = 'grid';
+                    btn5.disabled = true;
+                } else {
+                    bracketsOptions.style.display = 'none';
+                    btn5.disabled = false;
+                }
+            }
+
+            if (key === 'steps') {
+                const stepsOptions = document.getElementById('stepsOptionsContainer');
+                const btn6 = document.getElementById('btn6');
+                if (value) {
+                    stepsOptions.style.display = 'block';
+                    btn6.disabled = true;
+                } else {
+                    stepsOptions.style.display = 'none';
+                    btn6.disabled = false;
+                }
+            }
+
+            if (key === 'shoe') {
+                const shoeOptions = document.getElementById('shoeOptions');
+                const btn9 = document.getElementById('btn9');
+                if (value) {
+                    shoeOptions.style.display = 'grid';
+                    btn9.disabled = true;
+                } else {
+                    shoeOptions.style.display = 'none';
+                    btn9.disabled = false;
+                }
+            }
+        }
+
+        function selectRosetteStyle(index) {
+            currentOrder.rosetteStyle = config.rosettes[index];
+            document.querySelectorAll('#rosetteOptions .option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+            document.getElementById('btn4').disabled = false;
+        }
+
+        function selectStepOption(type, value) {
+            if (type === 'edges') {
+                currentOrder.stepEdges = value;
+            } else if (type === 'risers') {
+                currentOrder.stepRisers = value;
+            }
+
+            checkStepsComplete();
+        }
+
+        function checkStepsComplete() {
+            const btn6 = document.getElementById('btn6');
+            if (currentOrder.steps === false) {
+                btn6.disabled = false;
+            } else if (currentOrder.steps === true && currentOrder.stepEdges && currentOrder.stepRisers) {
+                btn6.disabled = false;
+            }
+        }
+
+        function selectWood(index) {
+            currentOrder.wood = config.woods[index];
+            document.querySelectorAll('#woodOptions .option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+            document.getElementById('btn7').disabled = false;
+        }
+
+        function selectSpindleType(index) {
+            const types = ['wood', 'iron'];
+            currentOrder.spindleType = types[index];
+            
+            document.querySelectorAll('#spindleTypeOptions .option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+
+            // Show spindle styles
+            const spindleStyleOptions = document.getElementById('spindleStyleOptions');
+            spindleStyleOptions.style.display = 'grid';
+            
+            const styles = currentOrder.spindleType === 'wood' ? config.spindlesWood : config.spindlesIron;
+            generateOptions(styles, 'spindleStyleOptions', 'selectSpindleStyle');
+            
+            document.getElementById('btn8').disabled = true;
+        }
+
+        function selectSpindleStyle(index) {
+            const styles = currentOrder.spindleType === 'wood' ? config.spindlesWood : config.spindlesIron;
+            currentOrder.spindleStyle = styles[index];
+            
+            document.querySelectorAll('#spindleStyleOptions .option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+            document.getElementById('btn8').disabled = false;
+        }
+
+        // ============================================
+        // NAVIGATION FUNCTIONS
+        // ============================================
+
+        function startConfiguration() {
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const address = document.getElementById('customerAddress').value.trim();
+
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            currentOrder.customerName = name;
+            currentOrder.customerPhone = phone;
+            currentOrder.customerAddress = address;
+
+            goToScreen('step1Screen');
+        }
+
+        function nextStep(stepNumber) {
+            if (stepNumber === 1) {
+                if (!currentOrder.mood) {
+                    alert('Por favor, selecione um mood!');
+                    return;
+                }
+                // Generate subcategories
+                const subcats = currentOrder.mood.subcategories.map(key => config.subcategories[key]);
+                generateOptions(subcats, 'subcategoryOptions', 'selectSubcategory');
+                goToScreen('step1bScreen');
+            } else if (stepNumber === '1b') {
+                if (!currentOrder.subcategory) {
+                    alert('Por favor, selecione uma subcategoria!');
+                    return;
+                }
+                const key = Object.keys(config.posts).find(k => k === currentOrder.subcategory.name.toLowerCase().replace(' ', ''));
+                generateOptions(posts, 'postOptions', 'selectPost');
+                goToScreen('step2Screen');
+            } else if (stepNumber === 2) {
+                if (!currentOrder.post) {
+                    alert('Por favor, selecione um poste!');
+                    return;
+                }
+                const key = Object.keys(config.railings).find(k => k === currentOrder.subcategory.name.toLowerCase().replace(' ', '').replace('á', 'a'));
+                generateOptions(railings, 'railingOptions', 'selectRailing');
+                goToScreen('step3Screen');
+            } else if (stepNumber === 3) {
+                if (!currentOrder.railing) {
+                    alert('Por favor, selecione um corrimão!');
+                    return;
+                }
+                goToScreen('step4Screen');
+            } else if (stepNumber === 4) {
+                if (currentOrder.rosette === null) {
+                    alert('Por favor, responda a pergunta sobre rosette!');
+                    return;
+                }
+                goToScreen('step5Screen');
+            } else if (stepNumber === 5) {
+                if (currentOrder.brackets === null) {
+                    alert('Por favor, responda a pergunta sobre brackets!');
+                    return;
+                }
+                if (currentOrder.brackets && !currentOrder.bracketsStyle) {
+                    const bracketsValue = document.getElementById('bracketsSelect').value;
+                    if (!bracketsValue) {
+                        alert('Por favor, selecione um estilo de bracket!');
+                        return;
+                    }
+                    currentOrder.bracketsStyle = bracketsValue;
+                }
+                goToScreen('step6Screen');
+            } else if (stepNumber === 6) {
+                if (currentOrder.steps === null) {
+                    alert('Por favor, responda a pergunta sobre steps!');
+                    return;
+                }
+                goToScreen('step7Screen');
+            } else if (stepNumber === 7) {
+                if (!currentOrder.wood) {
+                    alert('Por favor, selecione o tipo de madeira!');
+                    return;
+                }
+                generateOptions(config.woods, 'woodOptions', 'selectWood');
+                goToScreen('step8Screen');
+            } else if (stepNumber === 8) {
+                if (!currentOrder.spindleType) {
+                    alert('Por favor, selecione o tipo de spindle!');
+                    return;
+                }
+                if (!currentOrder.spindleStyle) {
+                    alert('Por favor, selecione o estilo de spindle!');
+                    return;
+                }
+                goToScreen('step9Screen');
+            } else if (stepNumber === 9) {
+                if (currentOrder.shoe === null) {
+                    alert('Por favor, responda a pergunta sobre shoe!');
+                    return;
+                }
+                if (currentOrder.shoe && !currentOrder.shoeStyle) {
+                    const shoeValue = document.getElementById('shoeSelect').value;
+                    if (!shoeValue) {
+                        alert('Por favor, selecione o formato do shoe!');
+                        return;
+                    }
+                    currentOrder.shoeStyle = shoeValue;
+                }
+                buildReview();
+                goToScreen('step10Screen');
+            }
+        }
+
+        function buildReview() {
+            const reviewContent = document.getElementById('reviewContent');
+            reviewContent.innerHTML = `
+                <div class="review-item">
+                    <div class="review-label">Cliente</div>
+                    <div class="review-value">${currentOrder.customerName}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Telefone</div>
+                    <div class="review-value">${currentOrder.customerPhone}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Endereço</div>
+                    <div class="review-value">${currentOrder.customerAddress}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Mood</div>
+                    <div class="review-value">${currentOrder.mood.name}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Subcategoria</div>
+                    <div class="review-value">${currentOrder.subcategory.name}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Poste</div>
+                    <div class="review-value">${currentOrder.post.name}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Corrimão</div>
+                    <div class="review-value">${currentOrder.railing.name}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Rosette</div>
+                    <div class="review-value">${currentOrder.rosette ? (currentOrder.rosetteStyle ? currentOrder.rosetteStyle.name : 'Sim') : 'Não'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Brackets</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Steps (Degraus)</div>
+                    <div class="review-value">${currentOrder.steps ? `Sim - Bordas ${currentOrder.stepEdges}, Risers ${currentOrder.stepRisers}` : 'Não'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Madeira</div>
+                    <div class="review-value">${currentOrder.wood.name}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Spindle</div>
+                    <div class="review-value">${currentOrder.spindleStyle.name}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">Shoe</div>
+                    <div class="review-value">${currentOrder.shoe ? currentOrder.shoeStyle : 'Não'}</div>
+                </div>
+            `;
+        }
+
+        function confirmOrder() {
+            const orderNumber = orders.length + 1;
+
+            const newOrder = {
+                id: orderNumber,
+                ...currentOrder,
+                date: new Date().toISOString()
+            };
+
+            orders.push(newOrder);
+            localStorage.setItem('buildpicker_orders', JSON.stringify(orders));
+
+            document.getElementById('orderNumberDisplay').textContent = '#' + String(orderNumber).padStart(4, '0');
+            goToScreen('confirmationScreen');
         }
 
         function resetForm() {
-            currentPhase = 1;
-            state.design = null;
-            state.post = null;
-            state.railing = null;
-            state.wood = null;
-            state.spindle = null;
-            state.clientName = '';
-            state.clientPhone = '';
-            state.clientLocation = '';
+            currentOrder = {
+                customerName: '',
+                customerPhone: '',
+                customerAddress: '',
+                mood: null,
+                subcategory: null,
+                post: null,
+                railing: null,
+                rosette: null,
+                rosetteStyle: null,
+                brackets: null,
+                bracketsStyle: null,
+                steps: null,
+                firstStep: null,
+                stepEdges: null,
+                stepRisers: null,
+                wood: null,
+                spindleType: null,
+                spindleStyle: null,
+                shoe: null,
+                shoeStyle: null
+            };
 
-            // Limpa campos do formulário
-            document.getElementById('clientName').value = '';
-            document.getElementById('clientPhone').value = '';
-            document.getElementById('clientLocation').value = '';
-            
-            // Fecha modal de sucesso
-            document.getElementById('successModal').classList.remove('active');
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('customerAddress').value = '';
 
-            // Reinicia a exibição
-            updatePhaseDisplay();
+            goToScreen('welcomeScreen');
         }
 
         // ============================================
-        // PAINEL DE ADMINISTRAÇÃO
+        // ADMIN FUNCTIONS
         // ============================================
 
-        function showAdminPanel() {
-            document.getElementById('adminModal').classList.add('active');
-            document.getElementById('adminLoginSection').style.display = 'block';
-            document.getElementById('adminOrdersSection').style.display = 'none';
-            document.getElementById('adminPassword').value = ''; // Limpa o campo da senha
-            document.getElementById('adminPassword').focus(); // Foca no campo da senha
-        }
+        function toggleAdmin() {
+            const customerScreen = document.getElementById('customerScreen');
+            const adminScreen = document.getElementById('adminScreen');
 
-        function closeAdminPanel() {
-            document.getElementById('adminModal').classList.remove('active');
-        }
-
-        function loginAdmin() {
-            const passwordInput = document.getElementById('adminPassword');
-            if (passwordInput.value === ADMIN_PASSWORD) {
-                showSuccess('Acesso ao painel administrativo concedido!');
-                document.getElementById('adminLoginSection').style.display = 'none';
-                document.getElementById('adminOrdersSection').style.display = 'block';
-                renderAdminOrders();
+            if (adminScreen.style.display === 'none') {
+                const password = prompt('Digite a senha do admin:');
+                if (password === 'admin') {
+                    customerScreen.style.display = 'none';
+                    adminScreen.style.display = 'block';
+                    loadOrders();
+                } else if (password !== null) {
+                    alert('Senha incorreta!');
+                }
             } else {
-                showError('Senha incorreta!');
-                passwordInput.value = '';
+                customerScreen.style.display = 'block';
+                adminScreen.style.display = 'none';
             }
         }
 
-        function logoutAdmin() {
-            showSuccess('Sessão admin encerrada.');
-            document.getElementById('adminOrdersSection').style.display = 'none';
-            document.getElementById('adminLoginSection').style.display = 'block';
-            document.getElementById('adminPassword').value = '';
-        }
-
-        function renderAdminOrders() {
-            const orderListElement = document.getElementById('orderList');
-            orders = JSON.parse(localStorage.getItem('buildPickerOrders')) || []; // Recarrega os pedidos
+        function loadOrders() {
+            const ordersList = document.getElementById('ordersList');
 
             if (orders.length === 0) {
-                orderListElement.innerHTML = '<p class="modal-text">Nenhum pedido ainda.</p>';
+                ordersList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <h2>Nenhum pedido ainda</h2>
+                        <p>Os pedidos aparecerão aqui quando forem criados</p>
+                    </div>
+                `;
                 return;
             }
 
-            orderListElement.innerHTML = '';
-            orders.forEach(order => {
-                const orderItem = document.createElement('li');
-                orderItem.className = 'order-item';
-                orderItem.innerHTML = `
-                    <p><strong>ID do Pedido:</strong> ${order.id}</p>
-                    <p><strong>Cliente:</strong> ${order.clientName} (${order.clientPhone})</p>
-                    <p><strong>Localização:</strong> ${order.clientLocation}</p>
-                    <p><strong>Design:</strong> ${order.design?.name || '-'}</p>
-                    <p><strong>Poste:</strong> ${order.post?.name || '-'}</p>
-                    <p><strong>Corrimão:</strong> ${order.railing?.name || '-'}</p>
-                    <p><strong>Madeira:</strong> ${order.wood?.name || '-'}</p>
-                    <p><strong>Spindle:</strong> ${order.spindle?.name || '-'}</p>
-                    <p><strong>Valor Total:</strong> R$ ${order.totalPrice.toFixed(2).replace('.', ',')}</p>
-                    <p><strong>Data/Hora:</strong> ${order.timestamp}</p>
+            ordersList.innerHTML = orders.reverse().map(order => {
+                const date = new Date(order.date);
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-id">Pedido #${String(order.id).padStart(4, '0')}</div>
+                            <div class="order-date">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
+                        </div>
+                        <div class="order-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Cliente</div>
+                                <div class="detail-value">${order.customerName}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Telefone</div>
+                                <div class="detail-value">${order.customerPhone}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Endereço</div>
+                                <div class="detail-value">${order.customerAddress}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Mood</div>
+                                <div class="detail-value">${order.mood.name}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Subcategoria</div>
+                                <div class="detail-value">${order.subcategory.name}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Poste</div>
+                                <div class="detail-value">${order.post.name}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Corrimão</div>
+                                <div class="detail-value">${order.railing.name}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Madeira</div>
+                                <div class="detail-value">${order.wood.name}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Spindle</div>
+                                <div class="detail-value">${order.spindleStyle.name}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Rosette</div>
+                                <div class="detail-value">${order.rosette ? 'Sim' : 'Não'}</div>
+                            </div>
+                        </div>
+                    </div>
                 `;
-                orderListElement.appendChild(orderItem);
-            });
-        }
-
-        function clearAllOrders() {
-            if (confirm('Tem certeza que deseja limpar TODOS os pedidos? Esta ação é irreversível!')) {
-                localStorage.removeItem('buildPickerOrders');
-                orders = [];
-                renderAdminOrders();
-                showSuccess('Todos os pedidos foram removidos.');
-            }
+            }).join('');
         }
 
         // ============================================
-        // INICIALIZAÇÃO
+        // INITIALIZATION
         // ============================================
 
-        document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', () => {
+            generateOptions(config.moods, 'moodOptions', 'selectMood');
+            generateOptions(config.woods, 'woodOptions', 'selectWood');
+            updateProgressBar();
+        });
     </script>
 </body>
 </html>
-```
