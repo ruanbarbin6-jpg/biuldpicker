@@ -367,21 +367,14 @@
                 <div class="card">
                     <h1>Bem-vindo ao BuildPicker</h1>
                     <p class="subtitle">Configure seu projeto de corrimão em 10 passos</p>
-                    
-                    <div class="form-group">
-                        <label>Nome do Cliente</label>
-                        <input type="text" id="customerName" placeholder="Digite o nome completo">
+                    <div style="text-align: center; margin: 60px 0;">
+                        <div style="font-size: 80px; margin-bottom: 20px;">🏗️</div>
+                        <p style="font-size: 18px; color: var(--texto-secundario); margin-bottom: 40px;">
+                            Vamos criar o corrimão perfeito para você!
+                        </p>
                     </div>
-                    <div class="form-group">
-                        <label>Telefone</label>
-                        <input type="tel" id="customerPhone" placeholder="(00) 00000-0000">
-                    </div>
-                    <div class="form-group">
-                        <label>Endereço</label>
-                        <input type="text" id="customerAddress" placeholder="Rua, número, cidade">
-                    </div>
-                    <div class="buttons-row">
-                        <button class="btn btn-primary" id="btnStart">Começar →</button>
+                    <div class="buttons-row" style="justify-content: center;">
+                        <button class="btn btn-primary" id="btnStart" style="font-size: 18px; padding: 18px 40px;">Começar Configuração →</button>
                     </div>
                 </div>
             </div>
@@ -629,6 +622,31 @@
                     <div class="buttons-row">
                         <button class="btn btn-secondary" id="back10">← Voltar</button>
                         <button class="btn btn-primary" id="next10" disabled>Revisar →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Info (after step 10) -->
+            <div id="customerScreen" class="screen">
+                <div class="card">
+                    <h1>Quase lá! Dados do Cliente</h1>
+                    <p class="subtitle">Agora precisamos dos seus dados para finalizar</p>
+                    
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="customerName" placeholder="Digite o nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="tel" id="customerPhone" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <input type="text" id="customerAddress" placeholder="Rua, número, cidade">
+                    </div>
+                    <div class="buttons-row">
+                        <button class="btn btn-secondary" id="backCustomer">← Voltar</button>
+                        <button class="btn btn-primary" id="nextCustomer">Revisar Pedido →</button>
                     </div>
                 </div>
             </div>
@@ -911,19 +929,6 @@
 
         // Start
         document.getElementById('btnStart').onclick = function() {
-            var name = document.getElementById('customerName').value.trim();
-            var phone = document.getElementById('customerPhone').value.trim();
-            var address = document.getElementById('customerAddress').value.trim();
-
-            if (!name || !phone || !address) {
-                alert('Preencha todos os campos!');
-                return;
-            }
-
-            order.customerName = name;
-            order.customerPhone = phone;
-            order.customerAddress = address;
-
             createProgress('progress1', 1);
             renderOptions(config.moods, 'moodOptions', function(item) {
                 order.mood = item;
@@ -1224,12 +1229,31 @@
 
         document.getElementById('back10').onclick = function() { goToScreen('step9aScreen'); };
         document.getElementById('next10').onclick = function() {
+            goToScreen('customerScreen');
+        };
+
+        // Customer Info
+        document.getElementById('backCustomer').onclick = function() { goToScreen('step10Screen'); };
+        document.getElementById('nextCustomer').onclick = function() {
+            var name = document.getElementById('customerName').value.trim();
+            var phone = document.getElementById('customerPhone').value.trim();
+            var address = document.getElementById('customerAddress').value.trim();
+
+            if (!name || !phone || !address) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            order.customerName = name;
+            order.customerPhone = phone;
+            order.customerAddress = address;
+
             buildReview();
             goToScreen('reviewScreen');
         };
 
         // Review
-        document.getElementById('backReview').onclick = function() { goToScreen('step10Screen'); };
+        document.getElementById('backReview').onclick = function() { goToScreen('customerScreen'); };
         document.getElementById('btnConfirm').onclick = function() {
             var orderNumber = orders.length + 1;
             var newOrder = {
